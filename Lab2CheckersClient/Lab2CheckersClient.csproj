@@ -60,6 +60,7 @@
     <Compile Include="Checker.cs" />
     <Compile Include="Converters\ConnectedConverter.cs" />
     <Compile Include="Converters\StrokeConverter.cs" />
+    <Compile Include="ServerInfo.cs" />
     <Compile Include="User.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
