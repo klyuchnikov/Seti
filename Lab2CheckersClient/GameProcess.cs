@@ -17,8 +17,16 @@ namespace Lab2CheckersClient
 
         public Canvas CanvasGame { get; private set; }
 
-        public bool IsStroke { get; set; }
+        /// <summary>
+        /// В данный момент выполняется ход
+        /// </summary>
+        public bool IsRunStroke { get; set; }
 
+        public Checker RunStrokeChecker { get; set; }
+
+        /// <summary>
+        /// Чей ход в данный момент, если true - ход мой, false - ход противника
+        /// </summary>
         public bool IsSelfStroke { get; set; }
 
         private GameProcess()
@@ -44,12 +52,69 @@ namespace Lab2CheckersClient
                 Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
             }
         }
+        private void RenderChecker(Checker checker)
+        {
+            Canvas.SetLeft(checker.ImageFigure, 18 + checker.Position.X * 48);
+            Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
+        }
 
         public void SetCanvasGame(Canvas canvas)
         {
             this.CanvasGame = canvas;
             GenChecker();
             RenderCheckers();
+            canvas.MouseDown += canvas_MouseDown;
+        }
+
+        void canvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsRunStroke)
+            {
+                var point = Mouse.GetPosition(CanvasGame);
+                var pGame = GetPointGame(point);
+                if (!RunStrokeChecker.IsKing)
+                {
+                    if (RunStrokeChecker.Position.X == 0)
+                    {
+                        if (pGame.X == 1 && RunStrokeChecker.Position.Y == pGame.Y + 1)
+                        {
+                            RunStrokeChecker.Position = new Point(1, pGame.Y);
+                            RenderChecker(RunStrokeChecker);
+                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
+                            GameProcess.Inctance.IsRunStroke = false;
+                            GameProcess.Inctance.SetCursorChecker(sender as Image);
+                        }
+                    }
+                    else if (RunStrokeChecker.Position.X == 7)
+                    {
+                        if (pGame.X == 6 && RunStrokeChecker.Position.Y == pGame.Y + 1)
+                        {
+                            RunStrokeChecker.Position = new Point(6, pGame.Y);
+                            RenderChecker(RunStrokeChecker);
+                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
+                            GameProcess.Inctance.IsRunStroke = false;
+                            GameProcess.Inctance.SetCursorChecker(sender as Image);
+                        }
+                    }
+                    else
+                        if (RunStrokeChecker.Position.Y == pGame.Y + 1 && (RunStrokeChecker.Position.X == pGame.X - 1 || RunStrokeChecker.Position.X == pGame.X + 1))
+                        {
+                            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+                            RenderChecker(RunStrokeChecker);
+                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
+                            GameProcess.Inctance.IsRunStroke = false;
+                            GameProcess.Inctance.SetCursorChecker(sender as Image);
+                        }
+
+                }
+            }
+        }
+        private Point GetPointGame(Point pountCanvas)
+        {
+            var res = new Point(0, 0);
+            res.X = (int)((pountCanvas.X - 18) / 48);
+            res.Y = (int)((pountCanvas.Y - 18) / 48);
+            return res;
         }
 
         #region Статическая часть
@@ -128,7 +193,7 @@ namespace Lab2CheckersClient
         {
             foreach (var checker in checkersSelf)
             {
-                if (this.IsStroke)
+                if (this.IsRunStroke)
                     checker.ImageFigure.Cursor = imageTrue == checker.ImageFigure ? Cursors.Hand : Cursors.Arrow;
                 else
                     checker.ImageFigure.Cursor = Cursors.Hand;

@@ -23,24 +23,37 @@ namespace Lab2CheckersClient
             {
                 ImageFigure.MouseDown += delegate(object sender, System.Windows.Input.MouseButtonEventArgs e)
                                              {
-                                                 if (!GameProcess.Inctance.IsStroke)
+                                                 if (!GameProcess.Inctance.IsRunStroke)
                                                  {
                                                      ImageFigure.Opacity = ImageFigure.Opacity == 1.0 ? 0.5 : 1.0;
-                                                     GameProcess.Inctance.IsStroke = !GameProcess.Inctance.IsStroke;
+                                                     GameProcess.Inctance.IsRunStroke = !GameProcess.Inctance.IsRunStroke;
                                                      GameProcess.Inctance.SetCursorChecker(sender as Image);
+                                                     GameProcess.Inctance.RunStrokeChecker = this;
                                                  }
                                                  else
                                                  {
                                                      if (ImageFigure.Opacity == 0.5)
                                                      {
                                                          ImageFigure.Opacity = ImageFigure.Opacity == 1.0 ? 0.5 : 1.0;
-                                                         GameProcess.Inctance.IsStroke = !GameProcess.Inctance.IsStroke;
+                                                         GameProcess.Inctance.IsRunStroke = !GameProcess.Inctance.IsRunStroke;
                                                          GameProcess.Inctance.SetCursorChecker(sender as Image);
                                                      }
                                                  }
                                              };
             }
         }
+
+        private bool isKing;
+        public bool IsKing
+        {
+            get { return isKing; }
+            set
+            {
+                isKing = value;
+
+            }
+        }
+
 
         public bool IsSelf
         {
