@@ -76,35 +76,24 @@ namespace Lab2CheckersClient
                 {
                     if (RunStrokeChecker.Position.X == 0)
                     {
-                        if (pGame.X == 1 && RunStrokeChecker.Position.Y == pGame.Y + 1)
-                        {
-                            RunStrokeChecker.Position = new Point(1, pGame.Y);
-                            RenderChecker(RunStrokeChecker);
-                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
-                            GameProcess.Inctance.IsRunStroke = false;
-                            GameProcess.Inctance.SetCursorChecker(sender as Image);
-                        }
+                        if (pGame.X != 1 || RunStrokeChecker.Position.Y != pGame.Y + 1) return;
                     }
                     else if (RunStrokeChecker.Position.X == 7)
                     {
-                        if (pGame.X == 6 && RunStrokeChecker.Position.Y == pGame.Y + 1)
-                        {
-                            RunStrokeChecker.Position = new Point(6, pGame.Y);
-                            RenderChecker(RunStrokeChecker);
-                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
-                            GameProcess.Inctance.IsRunStroke = false;
-                            GameProcess.Inctance.SetCursorChecker(sender as Image);
-                        }
+                        if (pGame.X != 6 || RunStrokeChecker.Position.Y != pGame.Y + 1) return;
                     }
                     else
-                        if (RunStrokeChecker.Position.Y == pGame.Y + 1 && (RunStrokeChecker.Position.X == pGame.X - 1 || RunStrokeChecker.Position.X == pGame.X + 1))
-                        {
-                            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
-                            RenderChecker(RunStrokeChecker);
-                            RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
-                            GameProcess.Inctance.IsRunStroke = false;
-                            GameProcess.Inctance.SetCursorChecker(sender as Image);
-                        }
+                        if (!(RunStrokeChecker.Position.Y == pGame.Y + 1 && (RunStrokeChecker.Position.X == pGame.X - 1 || RunStrokeChecker.Position.X == pGame.X + 1)))
+                            return;
+                    if (checkersSelf.SingleOrDefault(a => a.Position == pGame) != null)
+                        return;
+                    if (checkersOpponent.SingleOrDefault(a => a.Position == pGame) != null)
+                        return;
+                    RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+                    RenderChecker(RunStrokeChecker);
+                    RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
+                    GameProcess.Inctance.IsRunStroke = false;
+                    GameProcess.Inctance.SetCursorChecker(sender as Image);
 
                 }
             }
