@@ -63,41 +63,88 @@ namespace Lab2CheckersClient
             this.CanvasGame = canvas;
             GenChecker();
             RenderCheckers();
-            canvas.MouseDown += canvas_MouseDown;
+            canvas.PreviewMouseDown += canvas_MouseDown;
         }
 
         void canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (IsRunStroke)
+            if (!IsRunStroke) return;
+            var point = Mouse.GetPosition(CanvasGame);
+            var pGame = GetPointGame(point);
+            bool endStroke = (pGame == RunStrokeChecker.Position);
+            if ((pGame.Y % 2 != 0 || pGame.X % 2 != 1) && (pGame.Y % 2 != 1 || pGame.X % 2 != 0)) return; // кликнули по белым точкам
+            if (!RunStrokeChecker.IsKing)
             {
-                var point = Mouse.GetPosition(CanvasGame);
-                var pGame = GetPointGame(point);
-                if (!RunStrokeChecker.IsKing)
+                if (RunStrokeChecker.Position.Y == pGame.Y + 1) // если просто ход вперед
                 {
-                    if (RunStrokeChecker.Position.X == 0)
-                    {
-                        if (pGame.X != 1 || RunStrokeChecker.Position.Y != pGame.Y + 1) return;
-                    }
-                    else if (RunStrokeChecker.Position.X == 7)
-                    {
-                        if (pGame.X != 6 || RunStrokeChecker.Position.Y != pGame.Y + 1) return;
-                    }
-                    else
-                        if (!(RunStrokeChecker.Position.Y == pGame.Y + 1 && (RunStrokeChecker.Position.X == pGame.X - 1 || RunStrokeChecker.Position.X == pGame.X + 1)))
-                            return;
-                    if (checkersSelf.SingleOrDefault(a => a.Position == pGame) != null)
-                        return;
-                    if (checkersOpponent.SingleOrDefault(a => a.Position == pGame) != null)
-                        return;
-                    RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
-                    RenderChecker(RunStrokeChecker);
-                    RunStrokeChecker.ImageFigure.Opacity = 1.0;// ? 0.5 : 1.0;
-                    GameProcess.Inctance.IsRunStroke = false;
-                    GameProcess.Inctance.SetCursorChecker(sender as Image);
-
+                    if (RunStrokeChecker.Position.X == pGame.X - 1 || RunStrokeChecker.Position.X == pGame.X + 1)
+                        MoveChecker(pGame);
+                }
+                else // если удар
+                {
+                    recBeatChecker(pGame, RunStrokeChecker.Position, RunStrokeChecker.Position, new List<Point>(), endStroke);
+                    if (endStroke)
+                        beatenPointOpponentChekers = new List<Point>();
                 }
             }
+            else
+            {
+
+            }
         }
+
+        private List<Point> beatenPointOpponentChekers = new List<Point>();
+
+        private void recBeatChecker(Point pGame, Point pNext, Point pOld, List<Point> beatenPointOpponentChekersLocal, bool endStroke)
+        {
+            if (pNext == pGame)
+            {
+                if (endStroke)
+                    foreach (var beatenPointOpponentCheker in beatenPointOpponentChekers)
+                    {
+                        var checkerOpponent = checkersOpponent.Single(q => q.Position == beatenPointOpponentCheker);
+                        BeatOpponentChecker(checkerOpponent);
+                    }
+                else
+                {
+                    beatenPointOpponentChekers.AddRange(beatenPointOpponentChekersLocal);
+                }
+                RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+                RenderChecker(RunStrokeChecker);
+                return;
+            }
+
+            var points = new Point[4] { new Point(1, -1), new Point(1, 1), new Point(-1, -1), new Point(-1, 1) };
+            foreach (var point in points)
+                if (IsCheckerOpponent(pNext + (Vector)point) && IsFreePoint(pNext + (Vector)point * 2))
+                { // требует проверки!!!
+                    var newlist = new List<Point>(beatenPointOpponentChekersLocal) { pNext + (Vector)point };
+                    if (pNext + (Vector)point * 2 != pOld)
+                        recBeatChecker(pGame, pNext + (Vector)point * 2, pNext, newlist, endStroke);
+                }
+        }
+
+        private void MoveChecker(Point pGame)
+        {
+            if (!IsFreePoint(pGame)) return;
+            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+            RenderChecker(RunStrokeChecker);
+            RunStrokeChecker.ImageFigure.Opacity = 1.0; // ? 0.5 : 1.0;
+            GameProcess.Inctance.IsRunStroke = false;
+            GameProcess.Inctance.SetCursorChecker(RunStrokeChecker.ImageFigure);
+        }
+
+        private bool IsFreePoint(Point p)
+        {
+            return (checkersSelf.SingleOrDefault(a => a.Position == p) == null &&
+                    checkersOpponent.SingleOrDefault(a => a.Position == p) == null);
+        }
+
+        private bool IsCheckerOpponent(Point p)
+        {
+            return (checkersOpponent.SingleOrDefault(a => a.Position == p) != null);
+        }
+
         private Point GetPointGame(Point pountCanvas)
         {
             var res = new Point(0, 0);
@@ -139,14 +186,22 @@ namespace Lab2CheckersClient
 
         private List<Checker> checkersSelf;
         private List<Checker> checkersOpponent;
+        private List<Checker> checkersBeaten;
 
         public Checker[] CheckerSelf
         {
             get { return checkersSelf.ToArray(); }
         }
+
         public Checker[] CheckerOpponent
         {
             get { return checkersOpponent.ToArray(); }
+        }
+
+
+        public Checker[] CheckersBeaten
+        {
+            get { return checkersBeaten.ToArray(); }
         }
 
         private void GenChecker()
@@ -154,6 +209,7 @@ namespace Lab2CheckersClient
 
             checkersSelf = new List<Checker>();
             checkersOpponent = new List<Checker>();
+            checkersBeaten = new List<Checker>();
             for (int i = 0; i < 8; i += 2)
             {
                 var image1 = new Image() { Cursor = Cursors.Hand, Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/user.png")) };
@@ -166,15 +222,15 @@ namespace Lab2CheckersClient
                 CanvasGame.Children.Add(image3);
                 checkersSelf.Add(new Checker(image3, new Point(i, 7)));
 
-                var image11 = new Image() { Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponent.png")) };
-                CanvasGame.Children.Add(image11);
-                checkersSelf.Add(new Checker(image11, new Point(i + 1, 0)));
-                var image21 = new Image() { Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponent.png")) };
-                CanvasGame.Children.Add(image21);
-                checkersSelf.Add(new Checker(image21, new Point(i, 1)));
+                /*     var image11 = new Image() { Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponent.png")) };
+                     CanvasGame.Children.Add(image11);
+                     checkersOpponent.Add(new Checker(image11, new Point(i + 1, 0)));
+                     var image21 = new Image() { Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponent.png")) };
+                     CanvasGame.Children.Add(image21);
+                     checkersOpponent.Add(new Checker(image21, new Point(i, 1)));*/
                 var image31 = new Image() { Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponent.png")) };
                 CanvasGame.Children.Add(image31);
-                checkersSelf.Add(new Checker(image31, new Point(i + 1, 2)));
+                checkersOpponent.Add(new Checker(image31, new Point(i + 1, 2)));
             }
         }
 
@@ -190,10 +246,18 @@ namespace Lab2CheckersClient
             }
         }
 
-        public void RemoveSelfChecker(Checker checker)
+        public void BeatSelfChecker(Checker checker)
         {
             CanvasGame.Children.Remove(checker.ImageFigure);
             checkersSelf.Remove(checker);
+        }
+
+
+        public void BeatOpponentChecker(Checker checker)
+        {
+            CanvasGame.Children.Remove(checker.ImageFigure);
+            checkersBeaten.Add(checker);
+            checkersOpponent.Remove(checker);
         }
     }
 }
