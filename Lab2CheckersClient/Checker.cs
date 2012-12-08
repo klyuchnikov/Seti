@@ -50,6 +50,11 @@ namespace Lab2CheckersClient
             set
             {
                 isKing = value;
+                if (value)
+                    if (this.IsSelf)
+                        this.ImageFigure.Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userKing.png"));
+                    else
+                        this.ImageFigure.Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/userOpponentKing.png"));
 
             }
         }

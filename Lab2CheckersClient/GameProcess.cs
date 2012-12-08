@@ -127,6 +127,8 @@ namespace Lab2CheckersClient
         private void MoveChecker(Point pGame)
         {
             if (!IsFreePoint(pGame)) return;
+            if (pGame.Y == 0.0)
+                RunStrokeChecker.IsKing = true;
             RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
             RenderChecker(RunStrokeChecker);
             RunStrokeChecker.ImageFigure.Opacity = 1.0; // ? 0.5 : 1.0;
