@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace Lab2CheckersClient
 {
@@ -54,8 +55,26 @@ namespace Lab2CheckersClient
         }
         private void RenderChecker(Checker checker)
         {
-            Canvas.SetLeft(checker.ImageFigure, 18 + checker.Position.X * 48);
-            Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
+
+            DoubleAnimation dbAscendingX =
+                new DoubleAnimation(Canvas.GetLeft(checker.ImageFigure), 18 + checker.Position.X * 48,
+                                    new Duration(TimeSpan.FromMilliseconds(500)));
+            DoubleAnimation dbAscendingY =
+                new DoubleAnimation(Canvas.GetTop(checker.ImageFigure), 18 + checker.Position.Y * 48,
+                                    new Duration(TimeSpan.FromMilliseconds(500)));
+            Storyboard storyboard = new Storyboard();
+            storyboard.Children.Add(dbAscendingX);
+            storyboard.Children.Add(dbAscendingY);
+            Storyboard.SetTarget(dbAscendingX, checker.ImageFigure);
+            Storyboard.SetTarget(dbAscendingY, checker.ImageFigure);
+            Storyboard.SetTargetProperty(dbAscendingX, new PropertyPath(Canvas.LeftProperty));
+            Storyboard.SetTargetProperty(dbAscendingY, new PropertyPath(Canvas.TopProperty));
+            storyboard.Begin();
+            storyboard.Completed += delegate
+                {
+                    Canvas.SetLeft(checker.ImageFigure, 18 + checker.Position.X * 48);
+                    Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
+                };
         }
 
         public void SetCanvasGame(Canvas canvas)
