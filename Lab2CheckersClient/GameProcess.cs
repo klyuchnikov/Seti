@@ -69,9 +69,20 @@ namespace Lab2CheckersClient
         void canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!IsRunStroke) return;
-            var point = Mouse.GetPosition(CanvasGame);
-            var pGame = GetPointGame(point);
+            var pGame = GetPointGame(Mouse.GetPosition(CanvasGame));
             bool endStroke = (pGame == RunStrokeChecker.Position);
+            if (endStroke)
+            {
+                foreach (var beatenPointOpponentCheker in beatenPointOpponentChekers)
+                {
+                    var checkerOpponent = checkersOpponent.Single(q => q.Position == beatenPointOpponentCheker);
+                    BeatOpponentChecker(checkerOpponent);
+                }
+                beatenPointOpponentChekers = new List<Point>();
+                return;
+            }
+            if (!IsFreePoint(pGame))
+                return;
             if ((pGame.Y % 2 != 0 || pGame.X % 2 != 1) && (pGame.Y % 2 != 1 || pGame.X % 2 != 0)) return; // кликнули по белым точкам
             if (!RunStrokeChecker.IsKing)
             {
@@ -82,14 +93,66 @@ namespace Lab2CheckersClient
                 }
                 else // если удар
                 {
-                    recBeatChecker(pGame, RunStrokeChecker.Position, RunStrokeChecker.Position, new List<Point>(), endStroke);
-                    if (endStroke)
-                        beatenPointOpponentChekers = new List<Point>();
+                    var points = new[] { new Point(1, -1), new Point(1, 1), new Point(-1, -1), new Point(-1, 1) };
+                    foreach (var point in points)
+                        if (IsCheckerOpponent(RunStrokeChecker.Position + (Vector)point) &&
+                            IsFreePoint(RunStrokeChecker.Position + (Vector)point * 2) &&
+                            RunStrokeChecker.Position + (Vector)point * 2 == pGame)
+                        {
+                            beatenPointOpponentChekers.Add(RunStrokeChecker.Position + (Vector)point);
+                            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+                            RenderChecker(RunStrokeChecker);
+                        }
                 }
             }
             else
             {
+                var points = new List<Point>();
+                int i = 1;
+                do
+                {
+                    var oldCount = points.Count;
+                    var t1 = RunStrokeChecker.Position + (Vector)new Point(-i, -i);
+                    var t2 = RunStrokeChecker.Position + (Vector)new Point(i, -i);
+                    var t3 = RunStrokeChecker.Position + (Vector)new Point(-i, i);
+                    var t4 = RunStrokeChecker.Position + (Vector)new Point(i, i);
+                    if (t1.X > -1.0 && t1.Y > -1.0)
+                        points.Add(t1);
+                    if (t2.X < 8.0 && t2.Y > -1.0)
+                        points.Add(t2);
+                    if (t3.X > -1.0 && t3.Y < 8.0)
+                        points.Add(t3);
+                    if (t4.X < 8.0 && t4.Y < 8.0)
+                        points.Add(t4);
+                    if (oldCount == points.Count)
+                        break;
+                    else
+                        i++;
+                } while (true);
 
+
+                foreach (var point in points)
+                    if (point == pGame)
+                    {
+                        var dxP = point.X - RunStrokeChecker.Position.X;
+                        var dyP = point.Y - RunStrokeChecker.Position.Y;
+                        var lastPoints = new List<Point>();
+                        for (int k = 1; k <= Math.Abs(dxP) - 1; k++)
+                            lastPoints.Add(new Point(RunStrokeChecker.Position.X + k * dxP / Math.Abs(dxP), RunStrokeChecker.Position.Y + k * dyP / Math.Abs(dyP)));
+                        if (checkersSelf.SingleOrDefault(q => lastPoints.Contains(q.Position)) != null)
+                            return;
+                        var beatenCheckers = checkersOpponent.Where(a => lastPoints.Contains(a.Position));
+                        foreach (var beatenChecker in beatenCheckers)
+                            beatenPointOpponentChekers.Add(beatenChecker.Position);
+                        if (beatenPointOpponentChekers.Count == 0)
+                        {
+                            RunStrokeChecker.ImageFigure.Opacity = RunStrokeChecker.ImageFigure.Opacity == 1.0 ? 0.5 : 1.0;
+                            GameProcess.Inctance.IsRunStroke = !GameProcess.Inctance.IsRunStroke;
+                            GameProcess.Inctance.SetCursorChecker(sender as Image);
+                        }
+                        RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+                        RenderChecker(RunStrokeChecker);
+                    }
             }
         }
 
@@ -97,31 +160,7 @@ namespace Lab2CheckersClient
 
         private void recBeatChecker(Point pGame, Point pNext, Point pOld, List<Point> beatenPointOpponentChekersLocal, bool endStroke)
         {
-            if (pNext == pGame)
-            {
-                if (endStroke)
-                    foreach (var beatenPointOpponentCheker in beatenPointOpponentChekers)
-                    {
-                        var checkerOpponent = checkersOpponent.Single(q => q.Position == beatenPointOpponentCheker);
-                        BeatOpponentChecker(checkerOpponent);
-                    }
-                else
-                {
-                    beatenPointOpponentChekers.AddRange(beatenPointOpponentChekersLocal);
-                }
-                RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
-                RenderChecker(RunStrokeChecker);
-                return;
-            }
 
-            var points = new Point[4] { new Point(1, -1), new Point(1, 1), new Point(-1, -1), new Point(-1, 1) };
-            foreach (var point in points)
-                if (IsCheckerOpponent(pNext + (Vector)point) && IsFreePoint(pNext + (Vector)point * 2))
-                { // требует проверки!!!
-                    var newlist = new List<Point>(beatenPointOpponentChekersLocal) { pNext + (Vector)point };
-                    if (pNext + (Vector)point * 2 != pOld)
-                        recBeatChecker(pGame, pNext + (Vector)point * 2, pNext, newlist, endStroke);
-                }
         }
 
         private void MoveChecker(Point pGame)
