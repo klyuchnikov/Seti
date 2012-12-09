@@ -5,8 +5,7 @@
         xmlns:local="clr-namespace:Lab2CheckersClient"
         Height="510"
         Width="680"
-        ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen">
+        ResizeMode="NoResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
         <local:StrokeConverter x:Key="StrokeConverter1" />
@@ -34,16 +33,16 @@
             </Button>
             <Separator />
             <StatusBarItem Content="В онлайне:" />
-            <StatusBarItem Content="{Binding Path=Users.Length}"
+            <StatusBarItem Content=" "
                            Width="15"
                            HorizontalAlignment="Left" />
             <Separator />
             <StatusBarItem Content="Играют:" />
-            <StatusBarItem Content="{Binding Path=UserFree}"
+            <StatusBarItem Content=" "
                            Width="15"
                            HorizontalAlignment="Left" />
             <Separator />
-            <StatusBarItem Content="{Binding Path=UserName}" />
+            <StatusBarItem Content="пользователь:" />
         </StatusBar>
         <Grid Grid.Row="0"
               Visibility="{Binding Path=IsGameOnline, Converter={StaticResource BooleanToInverseVisibilityConverter1}}">
@@ -99,13 +98,13 @@
                            Margin="6,21,0,0"
                            Name="label3"
                            VerticalAlignment="Top" />
-                    <Label Content="{Binding Path=Opponent.Name}"
+                    <Label Content="Игрок2"
                            Height="28"
                            HorizontalAlignment="Left"
                            Margin="77,21,0,0"
                            Name="opponentLabel"
                            VerticalAlignment="Top" />
-                    <Label Content="{Binding Path=UserName}"
+                    <Label Content="Игрок1"
                            Height="28"
                            HorizontalAlignment="Left"
                            Margin="77,0,0,0"
