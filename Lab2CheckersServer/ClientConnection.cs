@@ -66,7 +66,7 @@ namespace Lab2CheckersServer
 
         public override string ToString()
         {
-            return string.Format("#{0} {1}, IP:", this.UserID, UserName, Sock.LocalEndPoint.AddressFamily);
+            return string.Format("#{0} {1}, IP:", this.UserID, UserName, Sock.LocalEndPoint.ToString());
         }
 
 
@@ -88,6 +88,7 @@ namespace Lab2CheckersServer
             if (e.BytesTransferred == 500 && UserName == null)
             {
                 SendBytes(new byte[] { 1 });
+                Console.WriteLine("send get username");
                 return;
             }
             switch (e.LastOperation)
@@ -115,6 +116,7 @@ namespace Lab2CheckersServer
                 {
                     this.UserName = Encoding.UTF8.GetString(e.Buffer, 1, e.BytesTransferred - 1);
                     Server.Current.SendPropertiesChanged();
+                    Console.WriteLine("set username");
                     return;
                 }
                 if (e.Buffer[0] == 2 && e.BytesTransferred == 1)
@@ -126,6 +128,7 @@ namespace Lab2CheckersServer
                     var buffer = new List<byte> { 2 };
                     buffer.AddRange(ms.ToArray());
                     SendBytes(buffer.ToArray());
+                    Console.WriteLine("send userslist");
                     return;
                 }
                 string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
