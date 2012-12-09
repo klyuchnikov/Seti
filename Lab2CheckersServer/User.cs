@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lab2CheckersServer
 {
+    [Serializable]
     class User
     {
         public string Login { get; set; }
