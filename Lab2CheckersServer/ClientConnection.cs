@@ -26,7 +26,7 @@ namespace Lab2CheckersServer
 
         public User GetUser()
         {
-            return new User() { ID = userID, IP = Sock.LocalEndPoint.AddressFamily.ToString(), Login = userName };
+            return new User() { ID = userID, IP = Sock.LocalEndPoint.AddressFamily.ToString(), Name = userName };
         }
         private string userName;
         public string UserName
