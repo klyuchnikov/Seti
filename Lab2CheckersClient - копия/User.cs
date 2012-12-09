@@ -9,7 +9,6 @@ namespace Lab2CheckersClient
     [Serializable]
     public class User : INotifyPropertyChanged
     {
-
         private string ip;
         public string IP
         {
@@ -22,36 +21,30 @@ namespace Lab2CheckersClient
             }
         }
 
-        private Guid guid;
-        public Guid Guid
+        public int id;
+        public int ID
         {
-            get { return guid; }
+            get { return id; }
             set
             {
-                guid = value;
+                id = value;
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Guid"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("ID"));
             }
         }
 
-        private Guid opponentGuid;
-        public Guid OpponentGuid
+        public string opponent;
+        public string Opponent
         {
-            get { return opponentGuid; }
+            get { return ip; }
             set
             {
-                opponentGuid = value;
+                opponent = value;
                 if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("OpponentGuid"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("OpponentUser"));
-                }
+                    PropertyChanged(this, new PropertyChangedEventArgs("Opponent"));
             }
         }
-        public User OpponentUser
-        {
-            get { return GameProcess.Inctance.Users.Single(a => a.Guid == opponentGuid); }
-        }
+
         private string name;
         public string Name
         {
@@ -71,7 +64,7 @@ namespace Lab2CheckersClient
         }
         public override string ToString()
         {
-            return name + " - " + (this.opponentGuid == Guid.Empty ? "свободен" : "играет");
+            return name + " - " + (this.opponent == null ? "свободен" : "играет");
         }
         /*
         private bool isFree;

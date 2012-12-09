@@ -64,7 +64,6 @@
     <Compile Include="Checker.cs" />
     <Compile Include="Converters\ConnectedConverter.cs" />
     <Compile Include="Converters\StrokeConverter.cs" />
-    <Compile Include="Operation.cs" />
     <Compile Include="User.cs" />
     <Page Include="ConnectForm.xaml">
       <SubType>Designer</SubType>
@@ -120,12 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\userOpponentKing.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lab2CheckersServer\Lab2CheckersServer.csproj">
-      <Project>{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}</Project>
-      <Name>Lab2CheckersServer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Lab2CheckersServer
 {
@@ -13,39 +14,44 @@ namespace Lab2CheckersServer
     {
         private Socket Sock;
         private SocketAsyncEventArgs AcceptAsyncArgs;
+        private bool IsOpen { get; set; }
 
         private Server()
         {
-            Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            AcceptAsyncArgs = new SocketAsyncEventArgs();
-            AcceptAsyncArgs.Completed += AcceptCompleted;
+            ListUsers = new List<User>();
+            ListConnection = new List<ClientConnection>();
         }
 
         public static Server Current = new Server();
 
-        private List<ClientConnection> listUsers = new List<ClientConnection>();
+        public List<User> ListUsers { get; set; }
 
-        public ClientConnection[] ListUsers
+        public List<ClientConnection> ListConnection { get; set; }
+
+        public User[] ListUsersArray
         {
-            get { return listUsers.ToArray(); }
-
+            get { return ListUsers.ToArray(); }
         }
+
         public void SendPropertiesChanged()
         {
             if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs("ListUsers"));
+                PropertyChanged(this, new PropertyChangedEventArgs("ListUsersArray"));
         }
 
         private void AcceptCompleted(object sender, SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success)
+            if (IsOpen)
             {
-                ClientConnection Client = new ClientConnection(e.AcceptSocket);
-                listUsers.Add(Client);
-                SendPropertiesChanged();
+                if (e.SocketError == SocketError.Success)
+                {
+                    ClientConnection Client = new ClientConnection(e.AcceptSocket);
+                    ListConnection.Add(Client);
+                    SendPropertiesChanged();
+                }
+                e.AcceptSocket = null;
+                AcceptAsync(AcceptAsyncArgs);
             }
-            e.AcceptSocket = null;
-            AcceptAsync(AcceptAsyncArgs);
         }
 
         private void AcceptAsync(SocketAsyncEventArgs e)
@@ -57,14 +63,28 @@ namespace Lab2CheckersServer
 
         public void Start(int Port)
         {
+            Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            AcceptAsyncArgs = new SocketAsyncEventArgs();
+            AcceptAsyncArgs.Completed += AcceptCompleted;
             Sock.Bind(new IPEndPoint(IPAddress.Any, Port));
             Sock.Listen(50);
             AcceptAsync(AcceptAsyncArgs);
+            IsOpen = true;
+
+            var timer = new Timer { Interval = 200 };
+            timer.Elapsed += delegate
+                {
+                    foreach (var connection in Server.Current.ListConnection)
+                        connection.SendListUsers();
+                };
+            //timer.Start();
         }
 
         public void Stop()
         {
+            //    Sock.Shutdown(SocketShutdown.Both);
             Sock.Close();
+            IsOpen = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

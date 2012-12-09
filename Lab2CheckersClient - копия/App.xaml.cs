@@ -21,7 +21,7 @@ namespace Lab2CheckersClient
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             Current.Exit += delegate
                                 {
-                                    Client.Current.Close();
+
                                 };
 
         }
