@@ -15,7 +15,7 @@
         <Label Content="Работает" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="76,0,0,0" />
         <Label Content="Порт:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,0,0,0" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="195,3,0,0" TextWrapping="Wrap" Text="4510" VerticalAlignment="Top" Width="46" Name="portTB"/>
-        <ListBox Name="ListUsers" Grid.Row="2" ItemsSource="{Binding ListUsers}" />
+        <ListBox Name="ListUsers" Grid.Row="2" ItemsSource="{Binding ListUsersArray}" />
         <Label Content="Пользователи на сервере" Grid.Row="1" />
     </Grid>
 </Window>

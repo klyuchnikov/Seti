@@ -25,8 +25,6 @@ namespace Lab2CheckersClient
 
         #endregion
 
-        public MainWindow MainWindow { get; set; }
-
         private GameProcess()
         {
             checkersSelf = new List<Checker>();
@@ -46,18 +44,6 @@ namespace Lab2CheckersClient
                 userName = value;
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs("UserName"));
-            }
-        }
-
-        private User opponent;
-        public User Opponent
-        {
-            get { return opponent; }
-            set
-            {
-                opponent = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Opponent"));
             }
         }
 
@@ -165,20 +151,15 @@ namespace Lab2CheckersClient
                     }
             }
         }
-        /// <summary>
-        /// убиваемые шашки противника за текущий ход
-        /// </summary>
+
         private List<Point> beatenPointOpponentChekers = new List<Point>();
 
         private bool isGameOnline;
         #region IsGameOnline
-        /// <summary>
-        /// Играет ли сейчас пользователь
-        /// </summary>
         public bool IsGameOnline
         {
             get { return isGameOnline; }
-            set
+            private set
             {
                 isGameOnline = value;
                 if (PropertyChanged != null)
@@ -190,7 +171,7 @@ namespace Lab2CheckersClient
 
         #region Users
 
-        private User[] users = new User[0];
+        private User[] users;
         public User[] Users
         {
             get { return users; }
@@ -198,31 +179,20 @@ namespace Lab2CheckersClient
             {
                 users = value;
                 if (PropertyChanged != null)
-                {
                     PropertyChanged(this, new PropertyChangedEventArgs("Users"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("UserFree"));
-                }
             }
         }
         #endregion
 
-        public int UserFree { get { return users.Count(a => a.OpponentGuid == Guid.Empty); } }
-
         #region CheckerSelf
         private List<Checker> checkersSelf;
-        /// <summary>
-        /// Свои шашки 
-        /// </summary>
-        public Checker[] CheckersSelf
+        public Checker[] CheckerSelf
         {
             get { return checkersSelf.ToArray(); }
         }
         #endregion
 
         #region CheckerOpponent
-        /// <summary>
-        /// Шашки противника
-        /// </summary>
         private List<Checker> checkersOpponent;
         public Checker[] CheckerOpponent
         {
@@ -231,9 +201,6 @@ namespace Lab2CheckersClient
         #endregion
 
         #region CheckersBeaten
-        /// <summary>
-        /// убитые шашки противника
-        /// </summary>
         private List<Checker> checkersBeaten;
         public Checker[] CheckersBeaten
         {

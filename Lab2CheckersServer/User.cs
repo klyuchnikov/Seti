@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,14 +8,76 @@ using System.Threading.Tasks;
 namespace Lab2CheckersServer
 {
     [Serializable]
-    class User
+    public class User : INotifyPropertyChanged
     {
-        public string Name { get; set; }
 
-        public string IP { get; set; }
+        private Guid guid;
+        public Guid Guid
+        {
+            get { return guid; }
+            set
+            {
+                guid = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("Guid"));
+            }
+        }
 
-        public int ID { get; set; }
+        private string ip;
+        public string IP
+        {
+            get { return ip; }
+            set
+            {
+                ip = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("IP"));
+            }
+        }
 
-        public string Opponent { get; set; }
+        private string userName;
+        public string UserName
+        {
+            get { return userName; }
+            set
+            {
+                userName = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("UserName"));
+            }
+        }
+
+        private int userID;
+        public int UserID
+        {
+            get { return userID; }
+            set
+            {
+                userID = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("UserID"));
+            }
+        }
+
+        private Guid opponentGuid;
+        public Guid OpponentGuid
+        {
+            get { return opponentGuid; }
+            set
+            {
+                opponentGuid = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("Opponent"));
+            }
+        }
+        public User OpponentUser
+        { get { return Server.Current.ListUsers.Single(a => a.Guid == opponentGuid); } }
+
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}, IP: {2}", guid, userName, ip);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
