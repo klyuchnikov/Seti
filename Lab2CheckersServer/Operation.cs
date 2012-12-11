@@ -12,7 +12,6 @@ namespace Lab2CheckersServer
         ListUsers = 2,
         SubmitGame = 3,
         TakeGame = 4,
-        GuietMove = 5,
-        Stroke = 6
+        Stroke = 5
     }
 }
