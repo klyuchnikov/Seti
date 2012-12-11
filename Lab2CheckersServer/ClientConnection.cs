@@ -12,11 +12,6 @@ using System.Timers;
 
 namespace Lab2CheckersServer
 {
-
-    public enum Operation
-    {
-        GetName
-    }
     internal class ClientConnection : INotifyPropertyChanged
     {
         private static int ClientNumber = 0;
@@ -59,37 +54,40 @@ namespace Lab2CheckersServer
 
         private void ProcessSend(SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success)
+            if (e.SocketError != SocketError.Success) return;
+            var sqea = new SocketAsyncEventArgs();
+            sqea.Completed += SockAsyncEventArgs_Completed;
+            sqea.SetBuffer(buff, 0, buff.Length);
+            try
             {
-                var sqea = new SocketAsyncEventArgs();
-                sqea.Completed += SockAsyncEventArgs_Completed;
-                sqea.SetBuffer(buff, 0, buff.Length);
-                try
-                {
-                    ReceiveAsync(sqea);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("error ProcessSend");
-                }
+                ReceiveAsync(sqea);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("error ProcessSend");
             }
         }
 
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success && e.Buffer.Length > 0)
+            if (e.SocketError != SocketError.Success || e.Buffer.Length <= 0) return;
+            switch ((Operation)e.Buffer[0])
             {
-                if (e.Buffer[0] == 1)
-                {
-                    var guid = Guid.Parse(Encoding.UTF8.GetString(e.Buffer, 1, 36));
+                case Operation.UserName:
+                    var guidNewUser = Guid.Parse(Encoding.UTF8.GetString(e.Buffer, 1, 36));
                     var username = Encoding.UTF8.GetString(e.Buffer, 37, e.BytesTransferred - 37);
-                    var user = Server.Current.ListUsers.SingleOrDefault(a => a.Guid == guid);
-                    if (user == null)
+                    var userNew = Server.Current.ListUsers.SingleOrDefault(a => a.Guid == guidNewUser);
+                    if (userNew == null)
                     {
-                        user = new User() { Guid = guid, IP = (Sock.LocalEndPoint as IPEndPoint).Address.ToString(), UserName = username };
-                        Server.Current.ListUsers.Add(user);
+                        userNew = new User()
+                            {
+                                Guid = guidNewUser,
+                                IP = (Sock.LocalEndPoint as IPEndPoint).Address.ToString(),
+                                UserName = username
+                            };
+                        Server.Current.ListUsers.Add(userNew);
                     }
-                    UserBind = user;
+                    UserBind = userNew;
                     foreach (var connection in Server.Current.ListConnection)
                         connection.SendListUsers();
                     Server.Current.SendPropertiesChanged();
@@ -102,46 +100,45 @@ namespace Lab2CheckersServer
                     buffer.AddRange(ms.ToArray());
                     SendBytes(buffer.ToArray());
                     Console.WriteLine("send userslist");
-                    return;
-                }
-                if (e.Buffer[0] == 2 && e.BytesTransferred == 1)
-                {
-                    foreach (var connection in Server.Current.ListConnection)
-                        connection.SendListUsers();
-                    return;
-                }
-                if (e.Buffer[0] == 200 && e.BytesTransferred == 1)
-                {
-                    Server.Current.ListUsers.Remove(UserBind);
-                    Sock.Close();
-                    Server.Current.ListConnection.Remove(this);
-                    Console.WriteLine("close " + UserBind.Guid);
-                    foreach (var connection in Server.Current.ListConnection)
-                        connection.SendListUsers();
-                    return;
-                }
-                if (e.Buffer[0] == 3) // предложение играть пользователю client
-                {
+                    break;
+                case Operation.ListUsers:
+                    if (e.BytesTransferred == 1)
+                        foreach (var connection in Server.Current.ListConnection)
+                            connection.SendListUsers();
+                    break;
+                case Operation.Close:
+                    if (e.BytesTransferred == 1)
+                    {
+                        Server.Current.ListUsers.Remove(UserBind);
+                        Sock.Close();
+                        Server.Current.ListConnection.Remove(this);
+                        Console.WriteLine("close " + UserBind.Guid);
+                        foreach (var connection in Server.Current.ListConnection)
+                            connection.SendListUsers();
+                    }
+                    break;
+                case Operation.SubmitGame: // предложение играть пользователю client
                     Console.WriteLine("send TakeGame");
-                    var guid = new Guid(e.Buffer.Skip(1).Take(16).ToArray());
-                    var client = Server.Current.ListConnection.Single(a => a.UserBind.Guid == guid);
+                    var guidUser = new Guid(e.Buffer.Skip(1).Take(16).ToArray());
+                    var client = Server.Current.ListConnection.Single(a => a.UserBind.Guid == guidUser);
                     client.SubmitGame(this.UserBind);
-                    return;
-                }
-                if (e.Buffer[0] == 4)// согласился играть с пользователем client
-                {
+                    break;
+                case Operation.TakeGame: // согласился играть с пользователем client
                     var guidOwner = new Guid(e.Buffer.Skip(2).Take(16).ToArray());
                     var result = e.Buffer[1] == 1;
                     var clientOwner = Server.Current.ListConnection.Single(a => a.UserBind.Guid == guidOwner);
                     clientOwner.TakeGame(this.UserBind, clientOwner.UserBind, result); // client - ower
                     this.TakeGame(clientOwner.UserBind, clientOwner.UserBind, result);
-
                     Console.WriteLine("send StartGame");
-                    return;
-                }
-                string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
-                Console.WriteLine("Incoming msg from #{0}: {1}", ClientNumber, str);
-                SendAsync("You send " + str);
+                    break;
+                case Operation.Stroke:
+                    Server.Current.ListConnection.Single(a => a.UserBind.OpponentGuid == this.UserBind.Guid).SendBytes(e.Buffer.Take(e.BytesTransferred).ToArray());
+                    break;
+                default:
+                    string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
+                    Console.WriteLine("Incoming msg from #{0}: {1}", ClientNumber, str);
+                    SendAsync("You send " + str);
+                    break;
             }
         }
 

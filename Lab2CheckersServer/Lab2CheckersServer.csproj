@@ -55,6 +55,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ClientConnection.cs" />
+    <Compile Include="Operation.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="User.cs" />
     <Page Include="MainWindow.xaml">
