@@ -11,6 +11,7 @@ namespace Lab2CheckersClient
         Close = 200,
         ListUsers = 2,
         SubmitGame = 3,
-        TakeGame = 4
+        TakeGame = 4,
+        Stroke = 5
     }
 }
