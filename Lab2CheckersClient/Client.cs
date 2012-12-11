@@ -185,17 +185,19 @@ namespace Lab2CheckersClient
                                 if (guidOwer == Guid)
                                 {
                                     if (res)
-                                        GameProcess.Inctance.MainWindow.StartGame(userTake);
+                                        GameProcess.Inctance.MainWindow.StartGame(userTake, true);
                                     else
                                         GameProcess.Inctance.MainWindow.DenialGame(userTake);
                                 }
                                 else if (res)
-                                    GameProcess.Inctance.MainWindow.StartGame(userOwer);
-
+                                    GameProcess.Inctance.MainWindow.StartGame(userOwer, false);
+                                break;
+                            case Operation.Stroke: // xod
+                                var stroke = Encoding.UTF8.GetString(state.buffer.Skip(1).ToArray());
+                                GameProcess.Inctance.RenderOpponentStroke(stroke);
                                 break;
                         }
                     }
-
                 }
             }
             catch (Exception e)
@@ -284,25 +286,29 @@ namespace Lab2CheckersClient
 
         public void SubmitGame(User selectedUser)
         {
-            if (Sock.Connected)
-            {
-                var buffer = new List<byte> { (byte)Operation.SubmitGame };
-                buffer.AddRange(selectedUser.Guid.ToByteArray());
-                buffer.AddRange(buffer);
-                SendBytes(buffer.ToArray());
-            }
+            if (!Sock.Connected) return;
+            var buffer = new List<byte> { (byte)Operation.SubmitGame };
+            buffer.AddRange(selectedUser.Guid.ToByteArray());
+            buffer.AddRange(buffer);
+            SendBytes(buffer.ToArray());
         }
 
         internal void TakeGame(User user, bool p)
         {
-            if (Sock.Connected)
-            {
-                var buffer = new List<byte> { (byte)Operation.TakeGame, (byte)(p ? 1 : 2) };
-                buffer.AddRange(user.Guid.ToByteArray());
-                SendBytes(buffer.ToArray());
-            }
+            if (!Sock.Connected) return;
+            var buffer = new List<byte> { (byte)Operation.TakeGame, (byte)(p ? 1 : 2) };
+            buffer.AddRange(user.Guid.ToByteArray());
+            SendBytes(buffer.ToArray());
         }
 
+
+        internal void SendStroke(string p)
+        {
+            if (!Sock.Connected) return;
+            var buffer = new List<byte> { (byte)Operation.Stroke };
+            buffer.AddRange(Encoding.UTF8.GetBytes(p));
+            SendBytes(buffer.ToArray());
+        }
     }
 }
 

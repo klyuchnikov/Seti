@@ -112,8 +112,8 @@
   <ItemGroup>
     <Resource Include="Resources\polotno.jpg" />
     <Resource Include="Resources\polotnoInverse.jpg" />
-    <Resource Include="Resources\user.png" />
-    <Resource Include="Resources\userOpponent.png" />
+    <Resource Include="Resources\userWhite.png" />
+    <Resource Include="Resources\userBlack.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\userKing.png" />

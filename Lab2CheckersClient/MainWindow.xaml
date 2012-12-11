@@ -65,7 +65,8 @@
                    VerticalAlignment="Top" />
         </Grid>
         <Grid  Grid.Row="0"
-               Visibility="{Binding Path=IsGameOnline, Converter={StaticResource BooleanToVisibilityConverter1}}">
+               
+              Visibility="{Binding Path=IsGameOnline, Converter={StaticResource BooleanToVisibilityConverter1}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="422" />
                 <ColumnDefinition Width="*" />
