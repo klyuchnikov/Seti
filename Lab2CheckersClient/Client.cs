@@ -193,7 +193,7 @@ namespace Lab2CheckersClient
                                     GameProcess.Inctance.MainWindow.StartGame(userOwer, false);
                                 break;
                             case Operation.Stroke: // xod
-                                var stroke = Encoding.UTF8.GetString(state.buffer.Skip(1).ToArray());
+                                var stroke = Encoding.UTF8.GetString(state.buffer.Skip(1).Take(bytesRead - 1).ToArray());
                                 GameProcess.Inctance.RenderOpponentStroke(stroke);
                                 break;
                         }
@@ -308,6 +308,7 @@ namespace Lab2CheckersClient
             var buffer = new List<byte> { (byte)Operation.Stroke };
             buffer.AddRange(Encoding.UTF8.GetBytes(p));
             SendBytes(buffer.ToArray());
+            GameProcess.Inctance.IsSelfStroke = false;
         }
     }
 }
