@@ -15,10 +15,11 @@ namespace Lab2CheckersClient
 
         public Image ImageFigure { get; private set; }
 
-        public Checker(Image image, Point position)
+        public Checker(Image image, Point position, bool isSelf)
         {
             this.ImageFigure = image;
             this.Position = position;
+            this.IsSelf = isSelf;
             if (this.IsSelf)
             {
                 ImageFigure.MouseDown += delegate(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -60,12 +61,6 @@ namespace Lab2CheckersClient
         }
 
 
-        public bool IsSelf
-        {
-            get
-            {
-                return !(this.ImageFigure.Source as BitmapImage).UriSource.AbsoluteUri.Contains("userOpponent");
-            }
-        }
+        public bool IsSelf { get; private set; }
     }
 }
