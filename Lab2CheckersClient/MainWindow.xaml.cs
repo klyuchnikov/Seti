@@ -71,10 +71,13 @@ namespace Lab2CheckersClient
 
         internal void StartGame(User user, bool isOwner)
         {
-            GameProcess.Inctance.IsGameOnline = true;
-            GameProcess.Inctance.Opponent = user;
-            GameProcess.Inctance.IsSelfStroke = isOwner;
-            GameProcess.Inctance.StartGame(isOwner);
+            Dispatcher.Invoke(new Action(() =>
+                {
+                    GameProcess.Inctance.IsGameOnline = true;
+                    GameProcess.Inctance.Opponent = user;
+                    GameProcess.Inctance.IsSelfStroke = isOwner;
+                    GameProcess.Inctance.StartGame(isOwner);
+                }), null);
         }
 
         internal void DenialGame(User userTake)

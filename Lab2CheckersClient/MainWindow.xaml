@@ -75,6 +75,8 @@
             <Canvas Grid.Row="1"
                     Width="422"
                     Height="422"
+                    IsEnabled="{Binding Path=IsSelfStroke}"
+                    IsManipulationEnabled="{Binding Path=IsSelfStroke}"
                     Name="canvas1">
                 <Image Width="422"
                        Height="422"
