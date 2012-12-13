@@ -65,6 +65,7 @@
     <Compile Include="Converters\ConnectedConverter.cs" />
     <Compile Include="Converters\StrokeConverter.cs" />
     <Compile Include="Operation.cs" />
+    <Compile Include="PointExtention.cs" />
     <Compile Include="User.cs" />
     <Page Include="ConnectForm.xaml">
       <SubType>Designer</SubType>

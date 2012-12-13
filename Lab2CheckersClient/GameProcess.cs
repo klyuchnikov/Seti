@@ -38,6 +38,7 @@ namespace Lab2CheckersClient
         public Canvas CanvasGame { get; private set; }
 
         private string userName;
+
         public string UserName
         {
             get { return userName; }
@@ -50,6 +51,7 @@ namespace Lab2CheckersClient
         }
 
         private User opponent;
+
         public User Opponent
         {
             get { return opponent; }
@@ -71,19 +73,34 @@ namespace Lab2CheckersClient
         /// </summary>
         public Checker RunStrokeChecker { get; set; }
 
+        private bool isSelfStroke;
+
         /// <summary>
         /// Чей ход в данный момент, если true - ход мой, false - ход противника
         /// </summary>
-        public bool IsSelfStroke { get; set; }
+        public bool IsSelfStroke
+        {
+            get { return isSelfStroke; }
+            set
+            {
+                isSelfStroke = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsSelfStroke"));
+            }
+        }
 
-        void canvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!IsRunStroke) return;
             var pGame = GetPointGame(Mouse.GetPosition(CanvasGame));
             bool endStroke = (pGame == RunStrokeChecker.Position);
             if (endStroke)
             {
-                foreach (var checkerOpponent in beatenPointOpponentChekers.Select(c => checkersOpponent.Single(q => q.Position == c)))
+                if (beatenPointOpponentChekers.Count == 0)
+                    return;
+                foreach (
+                    var checkerOpponent in
+                        beatenPointOpponentChekers.Select(c => checkersOpponent.Single(q => q.Position == c)))
                     BeatOpponentChecker(checkerOpponent);
                 beatenPointOpponentChekers = new List<Point>();
                 Client.Current.SendStroke(SendStroke);
@@ -92,7 +109,8 @@ namespace Lab2CheckersClient
             }
             if (!IsFreePoint(pGame))
                 return;
-            if ((pGame.Y % 2 != 0 || pGame.X % 2 != 1) && (pGame.Y % 2 != 1 || pGame.X % 2 != 0)) return; // кликнули по белым точкам
+            if ((pGame.Y % 2 != 0 || pGame.X % 2 != 1) && (pGame.Y % 2 != 1 || pGame.X % 2 != 0))
+                return; // кликнули по белым точкам
 
             if (SendStroke == "")
                 SendStroke = RunStrokeChecker.Position + "|";
@@ -107,15 +125,18 @@ namespace Lab2CheckersClient
                 else // если удар
                 {
                     var points = new[] { new Point(1, -1), new Point(1, 1), new Point(-1, -1), new Point(-1, 1) };
-                    foreach (var point in points.Where(point => IsCheckerOpponent(RunStrokeChecker.Position + (Vector)point) &&
-                                                                IsFreePoint(RunStrokeChecker.Position + (Vector)point * 2) &&
-                                                                RunStrokeChecker.Position + (Vector)point * 2 == pGame))
+                    foreach (
+                        var point in
+                            points.Where(point => IsCheckerOpponent(RunStrokeChecker.Position + (Vector)point) &&
+                                                  IsFreePoint(RunStrokeChecker.Position + (Vector)point * 2) &&
+                                                  RunStrokeChecker.Position + (Vector)point * 2 == pGame))
                     {
                         if (beatenPointOpponentChekers.Contains(RunStrokeChecker.Position + (Vector)point))
                             return;
                         beatenPointOpponentChekers.Add(RunStrokeChecker.Position + (Vector)point);
-                        BeatenChecker(checkersOpponent.Single(a => a.Position == RunStrokeChecker.Position + (Vector)point));
-                        SendStroke += ":" + RunStrokeChecker.Position + (Vector)point;
+                        BeatenChecker(
+                            checkersOpponent.Single(a => a.Position == RunStrokeChecker.Position + (Vector)point));
+                        SendStroke += ":" + (RunStrokeChecker.Position + (Vector)point);
                         SendStroke += "|" + pGame + "|";
                         RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
                         RenderChecker(RunStrokeChecker);
@@ -155,12 +176,16 @@ namespace Lab2CheckersClient
                         var dyP = point.Y - RunStrokeChecker.Position.Y;
                         var lastPoints = new List<Point>();
                         for (int k = 1; k <= Math.Abs(dxP) - 1; k++)
-                            lastPoints.Add(new Point(RunStrokeChecker.Position.X + k * dxP / Math.Abs(dxP), RunStrokeChecker.Position.Y + k * dyP / Math.Abs(dyP)));
+                            lastPoints.Add(new Point(RunStrokeChecker.Position.X + k * dxP / Math.Abs(dxP),
+                                                     RunStrokeChecker.Position.Y + k * dyP / Math.Abs(dyP)));
                         if (checkersSelf.SingleOrDefault(q => lastPoints.Contains(q.Position)) != null)
                             return;
                         var beatenCheckers = checkersOpponent.Where(a => lastPoints.Contains(a.Position)).ToArray();
                         int countBeatenCurrent = 0;
-                        foreach (var beatenChecker in beatenCheckers.Where(beatenChecker => !beatenPointOpponentChekers.Contains(beatenChecker.Position)))
+                        foreach (
+                            var beatenChecker in
+                                beatenCheckers.Where(
+                                    beatenChecker => !beatenPointOpponentChekers.Contains(beatenChecker.Position)))
                         {
                             countBeatenCurrent++;
                             beatenPointOpponentChekers.Add(beatenChecker.Position);
@@ -174,7 +199,7 @@ namespace Lab2CheckersClient
                                                                        : 1.0;
                             GameProcess.Inctance.IsRunStroke = !GameProcess.Inctance.IsRunStroke;
                             GameProcess.Inctance.SetCursorChecker(sender as Image);
-                            SendStroke += pGame + "|";
+                            SendStroke += "|" + pGame + "|";
                             Client.Current.SendStroke(SendStroke);
                             SendStroke = "";
                         }
@@ -196,13 +221,16 @@ namespace Lab2CheckersClient
         private string SendStroke = "";
 
         private Stack<Point> SelfStrokes = new Stack<Point>();
+
         /// <summary>
         /// убиваемые шашки противника за текущий ход
         /// </summary>
         private List<Point> beatenPointOpponentChekers = new List<Point>();
 
         private bool isGameOnline;
+
         #region IsGameOnline
+
         /// <summary>
         /// Играет ли сейчас пользователь
         /// </summary>
@@ -216,12 +244,14 @@ namespace Lab2CheckersClient
                     PropertyChanged(this, new PropertyChangedEventArgs("IsGameOnline"));
             }
         }
+
         #endregion
 
 
         #region Users
 
         private User[] users = new User[0];
+
         public User[] Users
         {
             get { return users; }
@@ -235,12 +265,18 @@ namespace Lab2CheckersClient
                 }
             }
         }
+
         #endregion
 
-        public int UserFree { get { return users.Count(a => a.OpponentGuid == Guid.Empty); } }
+        public int UserFree
+        {
+            get { return users.Count(a => a.OpponentGuid == Guid.Empty); }
+        }
 
         #region CheckerSelf
+
         private List<Checker> checkersSelf;
+
         /// <summary>
         /// Свои шашки 
         /// </summary>
@@ -248,28 +284,35 @@ namespace Lab2CheckersClient
         {
             get { return checkersSelf.ToArray(); }
         }
+
         #endregion
 
         #region CheckerOpponent
+
         /// <summary>
         /// Шашки противника
         /// </summary>
         private List<Checker> checkersOpponent;
+
         public Checker[] CheckerOpponent
         {
             get { return checkersOpponent.ToArray(); }
         }
+
         #endregion
 
         #region CheckersBeaten
+
         /// <summary>
         /// убитые шашки противника
         /// </summary>
         private List<Checker> checkersBeaten;
+
         public Checker[] CheckersBeaten
         {
             get { return checkersBeaten.ToArray(); }
         }
+
         #endregion
 
 
@@ -288,6 +331,7 @@ namespace Lab2CheckersClient
                 Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
             }
         }
+
         private void RenderChecker(Checker checker)
         {
 
@@ -306,11 +350,12 @@ namespace Lab2CheckersClient
             Storyboard.SetTargetProperty(dbAscendingY, new PropertyPath(Canvas.TopProperty));
             storyboard.Begin();
             storyboard.Completed += delegate
-            {
-                Canvas.SetLeft(checker.ImageFigure, 18 + checker.Position.X * 48);
-                Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
-            };
+                {
+                    Canvas.SetLeft(checker.ImageFigure, 18 + checker.Position.X * 48);
+                    Canvas.SetTop(checker.ImageFigure, 18 + checker.Position.Y * 48);
+                };
         }
+
         private void BeatenChecker(Checker checker)
         {
 
@@ -339,14 +384,14 @@ namespace Lab2CheckersClient
             if (!IsFreePoint(pGame)) return;
             if (pGame.Y == 0.0)
                 RunStrokeChecker.IsKing = true;
-            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
-            RenderChecker(RunStrokeChecker);
             RunStrokeChecker.ImageFigure.Opacity = 1.0; // ? 0.5 : 1.0;
             GameProcess.Inctance.IsRunStroke = false;
             GameProcess.Inctance.SetCursorChecker(RunStrokeChecker.ImageFigure);
 
             var stroke = RunStrokeChecker.Position + "|" + pGame;
             Client.Current.SendStroke(stroke);
+            RunStrokeChecker.Position = new Point(pGame.X, pGame.Y);
+            RenderChecker(RunStrokeChecker);
             SendStroke = "";
         }
 
@@ -387,29 +432,25 @@ namespace Lab2CheckersClient
             {
                 var image1 = new Image() { Cursor = Cursors.Hand, Source = new BitmapImage(new Uri(pngSelf)) };
                 CanvasGame.Children.Add(image1);
-                checkersSelf.Add(new Checker(image1, new Point(i, 5)));
+                checkersSelf.Add(new Checker(image1, new Point(i, 5), true));
                 var image2 = new Image() { Cursor = Cursors.Hand, Source = new BitmapImage(new Uri(pngSelf)) };
                 CanvasGame.Children.Add(image2);
-                checkersSelf.Add(new Checker(image2, new Point(i + 1, 6)));
+                checkersSelf.Add(new Checker(image2, new Point(i + 1, 6), true));
                 var image3 = new Image() { Cursor = Cursors.Hand, Source = new BitmapImage(new Uri(pngSelf)) };
                 CanvasGame.Children.Add(image3);
-                checkersSelf.Add(new Checker(image3, new Point(i, 7)));
+                checkersSelf.Add(new Checker(image3, new Point(i, 7), true));
 
-                /*     var image11 = new Image() { Source = new BitmapImage(new Uri(pngOpponent)) };
-                     CanvasGame.Children.Add(image11);
-                     checkersOpponent.Add(new Checker(image11, new Point(i + 1, 0)));
-                 * 
-                */
-                if (i < 5)
-                {
-                    var image21 = new Image() { Source = new BitmapImage(new Uri(pngOpponent)) };
+                var image11 = new Image() { Source = new BitmapImage(new Uri(pngOpponent)) };
+                CanvasGame.Children.Add(image11);
+                checkersOpponent.Add(new Checker(image11, new Point(i + 1, 0), false));
 
-                    CanvasGame.Children.Add(image21);
-                    checkersOpponent.Add(new Checker(image21, new Point(i, 1)));
-                }
+                var image21 = new Image() { Source = new BitmapImage(new Uri(pngOpponent)) };
+                CanvasGame.Children.Add(image21);
+                checkersOpponent.Add(new Checker(image21, new Point(i, 1), false));
+
                 var image31 = new Image() { Source = new BitmapImage(new Uri(pngOpponent)) };
                 CanvasGame.Children.Add(image31);
-                checkersOpponent.Add(new Checker(image31, new Point(i + 1, 2)));
+                checkersOpponent.Add(new Checker(image31, new Point(i + 1, 2), false));
             }
             RenderCheckers();
         }
@@ -441,71 +482,81 @@ namespace Lab2CheckersClient
 
         internal void RenderOpponentStroke(string stroke)
         {
-            Checker checker = null;
-            var list = new List<Tuple<bool, Point>>();
-            foreach (var block in stroke.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                var beatenPoints = block.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
-                if (beatenPoints.Length == 0)
+            MainWindow.Dispatcher.Invoke(new Action(() =>
                 {
-                    var point = Point.Parse(block.Replace(';', ','));
-                    if (checker == null)
-                        checker = checkersOpponent.Single(a => a.Position == point);
-                    else
-                        list.Add(new Tuple<bool, Point>(false, point));
-                }
-                else
-                    list.AddRange(beatenPoints.Select(beatenPoint => Point.Parse(block.Replace(';', ',')))
-                        .Select(point => new Tuple<bool, Point>(true, point)));
-            }
-            var duration = 0;
-            foreach (var point in list)
-            {
-                if (!point.Item1)
-                {
-                    checker.Position = point.Item2;
-                    DoubleAnimation dbAscendingX =
-                        new DoubleAnimation(Canvas.GetLeft(checker.ImageFigure), 18 + checker.Position.X * 48,
-                                            new Duration(TimeSpan.FromMilliseconds(500)));
-                    DoubleAnimation dbAscendingY =
-                        new DoubleAnimation(Canvas.GetTop(checker.ImageFigure), 18 + checker.Position.Y * 48,
-                                            new Duration(TimeSpan.FromMilliseconds(500)));
-                    Storyboard storyboard = new Storyboard();
-                    storyboard.Children.Add(dbAscendingX);
-                    storyboard.Children.Add(dbAscendingY);
-                    Storyboard.SetTarget(dbAscendingX, checker.ImageFigure);
-                    Storyboard.SetTarget(dbAscendingY, checker.ImageFigure);
-                    Storyboard.SetTargetProperty(dbAscendingX, new PropertyPath(Canvas.LeftProperty));
-                    Storyboard.SetTargetProperty(dbAscendingY, new PropertyPath(Canvas.TopProperty));
-                    storyboard.Completed += delegate
+                    Checker checker = null;
+                    var list = new List<Tuple<bool, Point>>();
+                    foreach (var block in stroke.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var beatenPoints = block.Split(new[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (!block.Contains(":")) // точки хода
                         {
-                            Canvas.SetLeft(checker.ImageFigure, 18 + point.Item2.X * 48);
-                            Canvas.SetTop(checker.ImageFigure, 18 + point.Item2.Y * 48);
-                        };
-                    storyboard.BeginTime = TimeSpan.FromTicks(DateTime.Now.AddMilliseconds(duration).Ticks);
-                    storyboard.Begin();
-                    duration += 500;
-                }
-                else
-                {
-                    var checkerBeaten = checkersSelf.Single(a => a.Position == point.Item2);
-                    DoubleAnimation dbAscendingX =
-                        new DoubleAnimation(checkerBeaten.ImageFigure.Opacity, 0.3,
-                                            new Duration(TimeSpan.FromMilliseconds(500)));
-                    Storyboard storyboard = new Storyboard();
-                    storyboard.Children.Add(dbAscendingX);
-                    Storyboard.SetTarget(dbAscendingX, checkerBeaten.ImageFigure);
-                    Storyboard.SetTargetProperty(dbAscendingX, new PropertyPath(Image.OpacityProperty));
-                    storyboard.Completed += delegate
+                            var point = Point.Parse(block.Replace(';', ',')).GetPointInvers();
+                            if (checker == null)
+                                checker = checkersOpponent.Single(a => a.Position == point);
+                            else
+                                list.Add(new Tuple<bool, Point>(false, point));
+                        }
+                        else // убитые свои шашки в полученных точках
+                            list.AddRange(beatenPoints.Select(
+                                beatenPoint => Point.Parse(beatenPoint.Replace(';', ',')).GetPointInvers())
+                                                      .Select(point => new Tuple<bool, Point>(true, point)));
+                    }
+                    var duration = 0;
+                    Point oldPoint = new Point(-1, -1);
+                    Point newPoint = new Point(-1, -1);
+                    foreach (var point in list)
+                    {
+                        if (!point.Item1)
                         {
-                            checkerBeaten.ImageFigure.Opacity = 0.3;
-                        };
-                    storyboard.BeginTime = TimeSpan.FromTicks(DateTime.Now.AddMilliseconds(duration).Ticks);
-                    storyboard.Begin();
-                    duration += 500;
+                            oldPoint = oldPoint == new Point(-1, -1) ? checker.Position : newPoint;
+                            newPoint = point.Item2;
+                            DoubleAnimation dbAscendingX =
+                                new DoubleAnimation(18 + oldPoint.X * 48, 18 + newPoint.X * 48,
+                                                    new Duration(TimeSpan.FromMilliseconds(500)));
+                            DoubleAnimation dbAscendingY =
+                                new DoubleAnimation(18 + oldPoint.Y * 48, 18 + newPoint.Y * 48,
+                                                    new Duration(TimeSpan.FromMilliseconds(500)));
+                            Storyboard storyboard = new Storyboard();
+                            storyboard.Children.Add(dbAscendingX);
+                            storyboard.Children.Add(dbAscendingY);
+                            Storyboard.SetTarget(dbAscendingX, checker.ImageFigure);
+                            Storyboard.SetTarget(dbAscendingY, checker.ImageFigure);
+                            Storyboard.SetTargetProperty(dbAscendingX, new PropertyPath(Canvas.LeftProperty));
+                            Storyboard.SetTargetProperty(dbAscendingY, new PropertyPath(Canvas.TopProperty));
+                            storyboard.Completed += delegate
+                                {
+                                    if (queue.Count != 0)
+                                        queue.Dequeue().Begin();
+                                };
+                            queue.Enqueue(storyboard);
+                            duration += 1000;
+                            checker.Position = newPoint;
+                        }
+                        else
+                        {
+                            var checkerBeaten = checkersSelf.Single(a => a.Position == point.Item2);
+                            DoubleAnimation dbAscendingX =
+                                new DoubleAnimation(checkerBeaten.ImageFigure.Opacity, 0.3,
+                                                    new Duration(TimeSpan.FromMilliseconds(500)));
+                            Storyboard storyboardBeaten = new Storyboard();
+                            storyboardBeaten.Children.Add(dbAscendingX);
+                            Storyboard.SetTarget(dbAscendingX, checkerBeaten.ImageFigure);
+                            Storyboard.SetTargetProperty(dbAscendingX, new PropertyPath(Image.OpacityProperty));
+                            storyboardBeaten.Completed += delegate
+                                {
+                                    BeatSelfChecker(checkerBeaten);
+                                };
+                            storyboardBeaten.BeginTime = TimeSpan.FromMilliseconds(duration);
+                            storyboardBeaten.Begin();
+                        }
+                    }
+                    queue.Dequeue().Begin();
                 }
-            }
-            this.IsSelfStroke = !this.IsSelfStroke;
+                                             ), null);
+            GameProcess.Inctance.IsSelfStroke = true;
         }
+
+        private Queue<Storyboard> queue = new Queue<Storyboard>();
     }
 }
