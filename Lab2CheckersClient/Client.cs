@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Net;
 using System.Timers;
+using System.Web.Script.Serialization;
 
 namespace Lab2CheckersClient
 {
@@ -123,32 +124,39 @@ namespace Lab2CheckersClient
         {
             try
             {
-                // Retrieve the state object and the client socket 
-                // from the asynchronous state object.
                 StateObject state = (StateObject)ar.AsyncState;
                 Socket client = state.workSocket;
 
                 int bytesRead = client.EndReceive(ar);
 
-                // Read data from the remote device.
                 if (bytesRead > 0)
                 {
-                    // There might be more data, so store the data received so far.
-                    //var .Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
                     Console.WriteLine("operation - {0}", buff[0]);
-                    // Get the rest of the data.
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                      new AsyncCallback(ReceiveCallback), state);
 
                     if (bytesRead == 1) // запросы сервера
                     {
-                        if (state.buffer[0] == 1)
+                        switch ((Operation)state.buffer[0])
                         {
-                            Console.WriteLine("send username");
-                            var userName = Encoding.UTF8.GetBytes(GameProcess.Inctance.UserName);
-                            var buffer = new List<byte> { (byte)Operation.UserName };
-                            buffer.AddRange(userName);
-                            SendBytes(buffer.ToArray());
+                            case Operation.Assert:
+                                break;
+                            case Operation.UserName:
+                                Console.WriteLine("send username");
+                                var userName = Encoding.UTF8.GetBytes(GameProcess.Inctance.UserName);
+                                var buffer = new List<byte> { (byte)Operation.UserName };
+                                buffer.AddRange(userName);
+                                SendBytes(buffer.ToArray());
+                                break;
+                            case Operation.AbortOpponentConnection:
+                                GameProcess.Inctance.MainWindow.AbortOpponentConnection();
+                                break;
+                            case Operation.OfferDraw:
+                                GameProcess.Inctance.MainWindow.OfferDraw();
+                                break;
+                            case Operation.GiveUp:
+                                GameProcess.Inctance.MainWindow.GiveUpOpponent();
+                                break;
                         }
                     }
                     else // ответы на свои запросы
@@ -156,16 +164,10 @@ namespace Lab2CheckersClient
                         switch ((Operation)state.buffer[0])
                         {
                             case Operation.ListUsers: // получение списка пользователей на сервере
-                                BinaryFormatter bf = new BinaryFormatter();
-                                MemoryStream ms = new MemoryStream(state.buffer, 1, bytesRead - 1);
-                                var ob =
-                                    ((Lab2CheckersServer.User[])bf.Deserialize(ms)).Select(
-                                        a =>
-                                        new User(a.UserName) { Guid = a.Guid, IP = a.IP, OpponentGuid = a.OpponentGuid }).
-                                        ToArray();
-                                if (ob.Length != GameProcess.Inctance.Users.Length)
-                                    GameProcess.Inctance.Users = ob;
-
+                                var str = Encoding.UTF8.GetString(state.buffer.Skip(1).Take(bytesRead - 1).ToArray());
+                                JavaScriptSerializer c = new JavaScriptSerializer();
+                                var users = c.Deserialize<User[]>(str);
+                                GameProcess.Inctance.Users = users;
                                 Console.WriteLine("set users");
                                 break;
                             case Operation.SubmitGame: // получение приглашения на игру
@@ -180,8 +182,15 @@ namespace Lab2CheckersClient
                                 var res = state.buffer[1] == 1;
                                 var guidOwer = new Guid(state.buffer.Skip(2).Take(16).ToArray());
                                 var guidTake = new Guid(state.buffer.Skip(18).Take(16).ToArray());
-                                var userTake = GameProcess.Inctance.Users.Single(a => a.Guid == guidTake);
-                                var userOwer = GameProcess.Inctance.Users.Single(a => a.Guid == guidOwer);
+                                User userTake = null;
+                                User userOwer = null;
+                                try
+                                {
+                                    userTake = GameProcess.Inctance.Users.Single(a => a.Guid == guidTake);
+                                    userOwer = GameProcess.Inctance.Users.Single(a => a.Guid == guidOwer);
+                                }
+                                catch (Exception exx)
+                                { }
                                 if (guidOwer == Guid)
                                 {
                                     if (res)
@@ -196,12 +205,25 @@ namespace Lab2CheckersClient
                                 var stroke = Encoding.UTF8.GetString(state.buffer.Skip(1).Take(bytesRead - 1).ToArray());
                                 GameProcess.Inctance.RenderOpponentStroke(stroke);
                                 break;
+                            case Operation.AgreeToDraw:
+                                var result = state.buffer[1] == 1;
+                                GameProcess.Inctance.MainWindow.AgreeToDraw(result);
+                                break;
                         }
                     }
                 }
             }
             catch (Exception e)
             {
+                try
+                {
+                    File.AppendAllLines("log_" + GameProcess.Inctance.UserName + ".txt", new string[] { e.Message, e.StackTrace });
+                }
+                catch (Exception)
+                {
+
+                    //throw;
+                }
                 Console.WriteLine(e.ToString());
             }
         }
@@ -309,6 +331,24 @@ namespace Lab2CheckersClient
             buffer.AddRange(Encoding.UTF8.GetBytes(p));
             SendBytes(buffer.ToArray());
             GameProcess.Inctance.IsSelfStroke = false;
+        }
+
+        internal void OfferDraw()
+        {
+            if (!Sock.Connected) return;
+            SendBytes(new[] { (byte)Operation.OfferDraw });
+        }
+
+        internal void GiveUp()
+        {
+            if (!Sock.Connected) return;
+            SendBytes(new[] { (byte)Operation.GiveUp });
+        }
+
+        internal void AgreeToDraw(bool res)
+        {
+            if (!Sock.Connected) return;
+            SendBytes(new[] { (byte)Operation.AgreeToDraw, (byte)(res ? 1 : 0) });
         }
     }
 }
