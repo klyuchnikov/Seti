@@ -17,7 +17,7 @@ namespace Lab2CheckersClient
         {
             try
             {
-                File.AppendAllLines("log_" + Client.Current.Guid + ".txt", new string[] { e.Exception.Message });
+                File.AppendAllLines("log_" + Client.Current.Guid + ".txt", new string[] { e.Exception.Message, e.Exception.StackTrace });
             }
             catch (Exception)
             {
