@@ -104,6 +104,8 @@ namespace Lab2CheckersClient
                     BeatOpponentChecker(checkerOpponent);
                 beatenPointOpponentChekers = new List<Point>();
                 Client.Current.SendStroke(SendStroke);
+                if (RunStrokeChecker.Position.Y == 0.0)
+                    RunStrokeChecker.IsKing = true;
                 SendStroke = "";
                 return;
             }
@@ -261,16 +263,16 @@ namespace Lab2CheckersClient
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Users"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("UserFree"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("UserNonFree"));
                 }
             }
         }
 
         #endregion
 
-        public int UserFree
+        public int UserNonFree
         {
-            get { return users.Count(a => a.OpponentGuid == Guid.Empty); }
+            get { return users.Count(a => a.OpponentGuid != Guid.Empty); }
         }
 
         #region CheckerSelf
@@ -428,6 +430,14 @@ namespace Lab2CheckersClient
             checkersSelf = new List<Checker>();
             checkersOpponent = new List<Checker>();
             checkersBeaten = new List<Checker>();
+            CanvasGame.Children.Clear();
+            CanvasGame.Children.Add(
+                new Image()
+                {
+                    Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/polotno.jpg")),
+                    Height = 422,
+                    Width = 422
+                });
             for (int i = 0; i < 8; i += 2)
             {
                 var image1 = new Image() { Cursor = Cursors.Hand, Source = new BitmapImage(new Uri(pngSelf)) };
@@ -526,6 +536,8 @@ namespace Lab2CheckersClient
                             Storyboard.SetTargetProperty(dbAscendingY, new PropertyPath(Canvas.TopProperty));
                             storyboard.Completed += delegate
                                 {
+                                    if (checker.Position.Y == 7.0)
+                                        checker.IsKing = true;
                                     if (queue.Count != 0)
                                         queue.Dequeue().Begin();
                                 };
@@ -558,5 +570,14 @@ namespace Lab2CheckersClient
         }
 
         private Queue<Storyboard> queue = new Queue<Storyboard>();
+
+        internal void StopGame()
+        {
+            CanvasGame.Children.Clear();
+            checkersSelf = new List<Checker>();
+            checkersOpponent = new List<Checker>();
+            checkersBeaten = new List<Checker>();
+            beatenPointOpponentChekers = new List<Point>();
+        }
     }
 }

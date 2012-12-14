@@ -85,6 +85,11 @@ namespace Lab2CheckersServer
             //    Sock.Shutdown(SocketShutdown.Both);
             Sock.Close();
             IsOpen = false;
+            ListUsers.RemoveAll(a => a.Guid != Guid.Empty);
+            ListConnection.RemoveAll(a => a.UserBind != null);
+            ListUsers = new List<User>();
+            ListConnection = new List<ClientConnection>();
+            SendPropertiesChanged();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

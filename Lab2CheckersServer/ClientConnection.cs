@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Web.Script.Serialization;
 
 namespace Lab2CheckersServer
 {
@@ -19,6 +20,7 @@ namespace Lab2CheckersServer
         private Socket Sock;
         private SocketAsyncEventArgs SockAsyncEventArgs;
         private byte[] buff;
+        private Timer timer;
 
         public ClientConnection(Socket AcceptedSocket)
         {
@@ -30,11 +32,51 @@ namespace Lab2CheckersServer
             SockAsyncEventArgs.SetBuffer(buff, 0, buff.Length);
 
             ReceiveAsync(SockAsyncEventArgs);
+            timer = new Timer(100);
+            timer.Elapsed += delegate
+                {
+                    try
+                    {
+                        if (Sock.Connected)
+                            Sock.Send(new byte[] { 0 });
+                    }
+                    catch (Exception e)
+                    {
+                        if (UserBind != null)
+                            if (UserBind.OpponentGuid != Guid.Empty)
+                            {
+                                var opponentConnection =
+                                    Server.Current.ListConnection.SingleOrDefault(
+                                        a => a.UserBind.OpponentGuid == UserBind.Guid);
+                                if (opponentConnection != null)
+                                    opponentConnection.AbortOpponentConnection();
+                                UserBind.OpponentGuid = Guid.Empty;
+                            }
+                        Server.Current.ListUsers.Remove(UserBind);
+                        Sock.Close();
+                        Server.Current.ListConnection.Remove(this);
+                        foreach (var connection in Server.Current.ListConnection)
+                            connection.SendListUsers();
+                        Server.Current.SendPropertiesChanged();
+                    }
+                };
+            timer.Start();
+
+        }
+
+        private void AbortOpponentConnection()
+        {
+            UserBind.OpponentGuid = Guid.Empty;
+
+            SendBytes(new byte[] { 6 });
         }
 
         ~ClientConnection()
         {
+            timer.Stop();
             Console.WriteLine("destructor");
+            try { Sock.Close(); }
+            catch (Exception) { }
         }
 
         public User UserBind { get; set; }
@@ -91,30 +133,33 @@ namespace Lab2CheckersServer
                     foreach (var connection in Server.Current.ListConnection)
                         connection.SendListUsers();
                     Server.Current.SendPropertiesChanged();
-                    Console.WriteLine("set username");
-
-                    BinaryFormatter bf = new BinaryFormatter();
-                    MemoryStream ms = new MemoryStream();
-                    bf.Serialize(ms, Server.Current.ListUsers.ToArray());
-                    var buffer = new List<byte> { 2 };
-                    buffer.AddRange(ms.ToArray());
-                    SendBytes(buffer.ToArray());
                     Console.WriteLine("send userslist");
                     break;
                 case Operation.ListUsers:
                     if (e.BytesTransferred == 1)
                         foreach (var connection in Server.Current.ListConnection)
                             connection.SendListUsers();
+                    Server.Current.SendPropertiesChanged();
                     break;
                 case Operation.Close:
                     if (e.BytesTransferred == 1)
                     {
+                        if (UserBind != null)
+                            if (UserBind.OpponentGuid != Guid.Empty)
+                            {
+                                var opponentConnection =
+                                    Server.Current.ListConnection.SingleOrDefault(
+                                        a => a.UserBind.OpponentGuid == UserBind.Guid);
+                                if (opponentConnection != null)
+                                    opponentConnection.AbortOpponentConnection();
+                            }
                         Server.Current.ListUsers.Remove(UserBind);
                         Sock.Close();
                         Server.Current.ListConnection.Remove(this);
                         Console.WriteLine("close " + UserBind.Guid);
                         foreach (var connection in Server.Current.ListConnection)
                             connection.SendListUsers();
+                        Server.Current.SendPropertiesChanged();
                     }
                     break;
                 case Operation.SubmitGame: // предложение играть пользователю client
@@ -129,10 +174,32 @@ namespace Lab2CheckersServer
                     var clientOwner = Server.Current.ListConnection.Single(a => a.UserBind.Guid == guidOwner);
                     clientOwner.TakeGame(this.UserBind, clientOwner.UserBind, result); // client - ower
                     this.TakeGame(clientOwner.UserBind, clientOwner.UserBind, result);
+                    foreach (var connection in Server.Current.ListConnection)
+                        connection.SendListUsers();
                     Console.WriteLine("send StartGame");
+                    Server.Current.SendPropertiesChanged();
                     break;
                 case Operation.Stroke:
                     Server.Current.ListConnection.Single(a => a.UserBind.OpponentGuid == this.UserBind.Guid).SendBytes(e.Buffer.Take(e.BytesTransferred).ToArray());
+                    break;
+                case Operation.OfferDraw:
+                    var opponent = Server.Current.ListConnection.Single(a => a.UserBind.Guid == UserBind.OpponentGuid);
+                    opponent.OfferDraw();
+                    break;
+                case Operation.GiveUp:
+                    var clientOpp = Server.Current.ListConnection.Single(a => a.UserBind.Guid == UserBind.OpponentGuid);
+                    clientOpp.GiveUp();
+                    foreach (var connection in Server.Current.ListConnection)
+                        connection.SendListUsers();
+                    Server.Current.SendPropertiesChanged();
+                    break;
+                case Operation.AgreeToDraw:
+                    var res = e.Buffer[1] == 1;
+                    var clientOpponent = Server.Current.ListConnection.Single(a => a.UserBind.Guid == UserBind.OpponentGuid);
+                    clientOpponent.AgreeToDraw(res);
+                    foreach (var connection in Server.Current.ListConnection)
+                        connection.SendListUsers();
+                    Server.Current.SendPropertiesChanged();
                     break;
                 default:
                     string str = Encoding.UTF8.GetString(e.Buffer, 0, e.BytesTransferred);
@@ -142,19 +209,32 @@ namespace Lab2CheckersServer
             }
         }
 
+        private void AgreeToDraw(bool res)
+        {
+            SendBytes(new[] { (byte)Operation.AgreeToDraw, (byte)(res ? 1 : 0) });
+            if (!res) return;
+            Server.Current.ListUsers.Single(a => a.Guid == this.UserBind.OpponentGuid).OpponentGuid = Guid.Empty;
+            this.UserBind.OpponentGuid = Guid.Empty;
+        }
+
+        private void GiveUp()
+        {
+            SendBytes(new[] { (byte)Operation.GiveUp });
+            Server.Current.ListUsers.Single(a => a.Guid == this.UserBind.OpponentGuid).OpponentGuid = Guid.Empty;
+            this.UserBind.OpponentGuid = Guid.Empty;
+        }
+
+        private void OfferDraw()
+        {
+            SendBytes(new[] { (byte)Operation.OfferDraw });
+        }
+
         public void SendListUsers()
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream();
-            bf.Serialize(ms, Server.Current.ListUsers.ToArray());
+            JavaScriptSerializer c = new JavaScriptSerializer();
+            var str = c.Serialize(Server.Current.ListUsers.Select(a => new { a.Guid, a.IP, a.OpponentGuid, a.UserName, a.UserID }).ToArray());
             var buffer = new List<byte> { 2 };
-            buffer.AddRange(ms.ToArray());
-
-            //   SocketAsyncEventArgs enew = new SocketAsyncEventArgs();
-            //   enew.Completed += SockAsyncEventArgs_Completed;
-            //   enew.SetBuffer(buffer, 0, buffer.Length);
-            // var res = Sock.Send(buffer.ToArray());
-
+            buffer.AddRange(Encoding.UTF8.GetBytes(str));
             SendBytes(buffer.ToArray());
             Console.WriteLine("send userslist -> " + UserBind.UserName);
         }

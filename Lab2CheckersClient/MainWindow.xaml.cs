@@ -19,7 +19,8 @@ namespace Lab2CheckersClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        ContextMenu userListContextMenu = new ContextMenu();
+        private ContextMenu userListContextMenu = new ContextMenu();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,17 +37,26 @@ namespace Lab2CheckersClient
             userListContextMenu.Opened += new RoutedEventHandler(userListContextMenu_Opened);
         }
 
-        void item1_Click(object sender, RoutedEventArgs e)
-        {// Предложить игру
+        private void item1_Click(object sender, RoutedEventArgs e)
+        {
+            // Предложить игру
             if (UsersList.SelectedItem == null)
                 return;
 
             var selectedUser = UsersList.SelectedItem as User;
-            Client.Current.SubmitGame(selectedUser);
+            if (selectedUser.Guid != Client.Current.Guid)
+                Client.Current.SubmitGame(selectedUser);
+            //    else
+            //       MessageBox.Show("")
         }
 
-        void userListContextMenu_Opened(object sender, RoutedEventArgs e)
+        private void userListContextMenu_Opened(object sender, RoutedEventArgs e)
         {
+            if (UsersList.SelectedItem == null)
+                return;
+            var selectedUser = UsersList.SelectedItem as User;
+            if (selectedUser.Guid == Client.Current.Guid)
+                userListContextMenu.IsOpen = false;
         }
 
 
@@ -64,7 +74,7 @@ namespace Lab2CheckersClient
 
         internal void TakeGame(User user)
         {
-            var res = MessageBox.Show("Вам предлагает игру пользователь: " + user.Name + ". Согласиться?",
+            var res = MessageBox.Show("Вам предлагает игру пользователь: " + user.UserName + ". Согласиться?",
                                       "Предложение игры", MessageBoxButton.YesNo);
             Client.Current.TakeGame(user, res == MessageBoxResult.Yes);
         }
@@ -82,8 +92,95 @@ namespace Lab2CheckersClient
 
         internal void DenialGame(User userTake)
         {
-            var res = MessageBox.Show("Пользователь: " + userTake.Name + " отказался с вами играть.",
-                                     "Предложение игры");
+            var res = MessageBox.Show("Пользователь: " + userTake.UserName + " отказался с вами играть.",
+                                      "Предложение игры");
+        }
+
+        internal void AbortOpponentConnection()
+        {
+            Dispatcher.Invoke(new Action(() =>
+                {
+                    MessageBox.Show("Противник потерял связь с сервером! Игра окончена");
+                    GameProcess.Inctance.IsGameOnline = false;
+                    GameProcess.Inctance.Opponent = null;
+                    GameProcess.Inctance.IsSelfStroke = true;
+                    GameProcess.Inctance.StopGame();
+                }), null);
+        }
+
+        private void OfferDraw_OnClick(object sender, RoutedEventArgs e)
+        {
+            var res = MessageBox.Show("Вы хотите предложить противнику ничью?", "Внимание", MessageBoxButton.YesNo);
+            if (res == MessageBoxResult.Yes)
+            {
+                Client.Current.OfferDraw();
+            }
+        }
+
+        private void GiveUp_OnClick(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+                {
+                    var res = MessageBox.Show("Вы хотите сдаться?", "Внимание", MessageBoxButton.YesNo);
+                    if (res != MessageBoxResult.Yes) return;
+                    Client.Current.GiveUp();
+                    MessageBox.Show("Вы сдались! Вы проиграли!");
+
+                    GameProcess.Inctance.IsGameOnline = false;
+                    GameProcess.Inctance.Opponent = null;
+                    GameProcess.Inctance.IsSelfStroke = true;
+                    GameProcess.Inctance.StopGame();
+                }), null);
+        }
+
+        internal void GiveUpOpponent()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                MessageBox.Show("Противник сдался! Вы победили");
+                GameProcess.Inctance.IsGameOnline = false;
+                GameProcess.Inctance.Opponent = null;
+                GameProcess.Inctance.IsSelfStroke = true;
+                GameProcess.Inctance.StopGame();
+            }), null);
+        }
+
+        internal void OfferDraw()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                var res = MessageBox.Show("Противник предлагает вам ничью! Вы согласитесь?", "Ничья", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+                if (res)
+                {
+                    MessageBox.Show("Игра закончена ничьей!");
+
+                    GameProcess.Inctance.IsGameOnline = false;
+                    GameProcess.Inctance.Opponent = null;
+                    GameProcess.Inctance.IsSelfStroke = true;
+                    GameProcess.Inctance.StopGame();
+                }
+                Client.Current.AgreeToDraw(res);
+            }), null);
+        }
+
+        internal void AgreeToDraw(bool result)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (result)
+                {
+                    MessageBox.Show("Противник согласился закончить игру ничьей.");
+
+                    GameProcess.Inctance.IsGameOnline = false;
+                    GameProcess.Inctance.Opponent = null;
+                    GameProcess.Inctance.IsSelfStroke = true;
+                    GameProcess.Inctance.StopGame();
+                }
+                else
+                {
+                    MessageBox.Show("Противник отказался от ничьи!");
+                }
+            }), null);
         }
     }
 }

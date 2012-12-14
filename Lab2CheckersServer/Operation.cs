@@ -12,6 +12,10 @@ namespace Lab2CheckersServer
         ListUsers = 2,
         SubmitGame = 3,
         TakeGame = 4,
-        Stroke = 5
+        Stroke = 5,
+        AbortOpponentConnection = 6,
+        OfferDraw = 7,
+        GiveUp = 8,
+        AgreeToDraw = 9
     }
 }

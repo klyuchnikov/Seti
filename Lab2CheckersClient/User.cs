@@ -50,18 +50,17 @@ namespace Lab2CheckersClient
         }
         public User OpponentUser
         {
-            get { return GameProcess.Inctance.Users.Single(a => a.Guid == opponentGuid); }
+            get { return this.opponentGuid == Guid.Empty ? null : GameProcess.Inctance.Users.Single(a => a.Guid == opponentGuid); }
         }
         private string name;
-        public string Name
+        public string UserName
         {
             get { return name; }
-            private set
+            set
             {
-                if (name != value)
                     name = value;
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Name"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("UserName"));
             }
         }
 
@@ -69,6 +68,20 @@ namespace Lab2CheckersClient
         {
             this.name = name;
         }
+        public User() { }
+
+        private int userID;
+        public int UserID
+        {
+            get { return userID; }
+            set
+            {
+                userID = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("UserID"));
+            }
+        }
+
         public override string ToString()
         {
             return name + " - " + (this.opponentGuid == Guid.Empty ? "свободен" : "играет");
@@ -88,5 +101,12 @@ namespace Lab2CheckersClient
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        internal void Update(User user1)
+        {
+            this.OpponentGuid = user1.OpponentGuid;
+            this.UserName = user1.UserName;
+            this.IP = user1.IP;
+        }
     }
 }

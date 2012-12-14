@@ -10,7 +10,6 @@ namespace Lab2CheckersServer
     [Serializable]
     public class User : INotifyPropertyChanged
     {
-
         private Guid guid;
         public Guid Guid
         {
@@ -58,7 +57,6 @@ namespace Lab2CheckersServer
                     PropertyChanged(this, new PropertyChangedEventArgs("UserID"));
             }
         }
-
         private Guid opponentGuid;
         public Guid OpponentGuid
         {
@@ -71,11 +69,15 @@ namespace Lab2CheckersServer
             }
         }
         public User OpponentUser
-        { get { return Server.Current.ListUsers.Single(a => a.Guid == opponentGuid); } }
+        { get { return this.opponentGuid == Guid.Empty ? null : Server.Current.ListUsers.Single(a => a.Guid == opponentGuid); } }
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}, IP: {2}", guid, userName, ip);
+            if (opponentGuid == Guid.Empty)
+                return string.Format("{0}: {1}, IP: {2}", guid, userName, ip);
+            else
+                return string.Format("{0}: {1}, IP: {2} Играет с {3}", guid, userName, ip, OpponentUser.UserName);
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
