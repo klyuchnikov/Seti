@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersClient", "Lab2CheckersClient\Lab2CheckersClient.csproj", "{260B535B-AD4F-457C-898C-40297DC6D564}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersServer", "Lab2CheckersServer\Lab2CheckersServer.csproj", "{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab4", "Lab4\Lab4.csproj", "{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,16 @@ Global
 		{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}.Release|x86.ActiveCfg = Release|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A37F429A-A27C-4B6D-8D74-71CCD5F10E4E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
