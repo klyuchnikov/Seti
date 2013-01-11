@@ -11,7 +11,10 @@ namespace Lab4
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!this.Request.Url.AbsolutePath.Contains("Account") &&!this.Page.User.Identity.IsAuthenticated)
+            {
+                Response.Redirect("/Account/Login.aspx");
+            }
         }
     }
 }

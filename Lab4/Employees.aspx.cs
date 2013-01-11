@@ -13,7 +13,7 @@ namespace Lab4
         {
             if (!User.Identity.IsAuthenticated)
             {
-                Response.Redirect("Error.aspx");
+                Response.Redirect("/Account/Login.aspx");
             }
 
             if (!User.IsInRole("Admin")) return;

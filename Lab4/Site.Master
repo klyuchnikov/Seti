@@ -32,12 +32,24 @@
             <div class="clear hideSkiplink">
                 <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" EnableViewState="false" IncludeStyleBlock="false" Orientation="Horizontal">
                     <Items>
-                        <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Домашняя"/>
-                        <asp:MenuItem NavigateUrl="~/About.aspx" Text="О программе"/>
+                       <%-- <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Домашняя"/>
+                        <asp:MenuItem NavigateUrl="~/About.aspx" Text="О программе"/>--%>
                         <asp:MenuItem NavigateUrl="~/Positions.aspx" Text="Должности"/>
                         <asp:MenuItem NavigateUrl="~/Projects.aspx" Text="Проекты"/>
                         <asp:MenuItem NavigateUrl="~/Employees.aspx" Text="Сотрудники"/>
+                        <asp:MenuItem NavigateUrl="~/LoadAvatar.aspx" Text="Загрузить фотографию"/>
                         <asp:MenuItem NavigateUrl="~/EmployeesProjects.aspx" Text="Сотрудники Проектов"/>
+                        <asp:MenuItem NavigateUrl="~/GetFromAddress.aspx" Text="Проживающие по заданному адресу"/>
+                        <asp:MenuItem NavigateUrl="~/Handlist.aspx" Text="Алфавитный список"/>
+                        <asp:MenuItem NavigateUrl="~/FirstNameUpper.aspx" Text="Фамилия,  преобразованная к верхнему  регистру"/>
+                        <asp:MenuItem NavigateUrl="~/FirstNameInitials.aspx" Text="Фамилии и инициалы"/>
+                        <asp:MenuItem NavigateUrl="~/EmplooyeesSalaryaspx.aspx" Text="Список с условием"/>
+                        <asp:MenuItem NavigateUrl="~/Salary.aspx" Text="Запрос с расчетами"/>
+                        <asp:MenuItem NavigateUrl="~/SalaryUSD.aspx" Text="Запрос с параметрами"/>
+                        <asp:MenuItem NavigateUrl="~/MinSalary.aspx" Text="Запрос с групповой операцией"/>
+                        <asp:MenuItem NavigateUrl="~/SalarySUM.aspx" Text="Запрос с групповой операцией SUM"/>
+                        <asp:MenuItem NavigateUrl="~/ProjectCount.aspx" Text="Запрос с групповой операцией COUNT"/>
+                        <asp:MenuItem NavigateUrl="~/Report.aspx" Text="Отчет"/>
                     </Items>
                 </asp:Menu>
             </div>

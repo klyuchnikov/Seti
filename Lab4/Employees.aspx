@@ -11,9 +11,18 @@
         <Columns>
             <asp:BoundField DataField="Id" HeaderText="Id" SortExpression="Id" InsertVisible="False"
                 ReadOnly="True" Visible="False" />
-            <asp:BoundField DataField="FIO" HeaderText="ФИО" SortExpression="FIO" />
-            <asp:BoundField DataField="Address" HeaderText="Адрес" SortExpression="Address" />
-            <asp:BoundField DataField="Characterization" HeaderText="Характеристика" SortExpression="Characterization" />
+            <asp:BoundField DataField="FirstName" HeaderText="Фамилия" 
+                SortExpression="FirstName" />
+            <asp:BoundField DataField="LastName" HeaderText="Имя" 
+                SortExpression="LastName" />
+            <asp:BoundField DataField="Patronymic" HeaderText="Отчество" 
+                SortExpression="Patronymic" />
+            <asp:BoundField DataField="Address" HeaderText="Адрес" 
+                SortExpression="Address" />
+            <asp:BoundField DataField="Characterization" HeaderText="Характеристика" 
+                SortExpression="Characterization" />
+            <asp:ImageField DataImageUrlField="AvatarName"   DataImageUrlFormatString="/Avatars/{0}" HeaderText="Фотография">
+            </asp:ImageField>
         </Columns>
         <FooterStyle BackColor="Tan" />
         <HeaderStyle BackColor="Tan" Font-Bold="True" />
