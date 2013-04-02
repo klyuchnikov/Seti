@@ -69,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -91,6 +92,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lab2CheckersClient\Lab2CheckersClient.csproj">
+      <Project>{260B535B-AD4F-457C-898C-40297DC6D564}</Project>
+      <Name>Lab2CheckersClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lab2CheckersServer\Lab2CheckersServer.csproj">
+      <Project>{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}</Project>
+      <Name>Lab2CheckersServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
