@@ -33,7 +33,17 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 
         public Tag[] Tags
         {
-            get { return Model.Current.Tags.Where(a => a.Document == this).ToArray(); }
+            get
+            {
+                try
+                {
+                    return Model.Current.Tags.Where(a => a.Document == this).ToArray();
+                }
+                catch (Exception exception)
+                {
+                    return null;
+                }
+            }
         }
 
         public void Update()

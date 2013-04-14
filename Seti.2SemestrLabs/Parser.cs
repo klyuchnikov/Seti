@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using Attribute = System.Attribute;
@@ -9,13 +10,85 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 {
     public class Parser
     {
+        public class StateObject
+        {
+            // Client socket.
+            public Socket workSocket = null;
+            // Size of receive buffer.
+            public const int BufferSize = 1024 * 3200;
+            // Receive buffer.
+            public byte[] buffer = new byte[BufferSize];
+            // Received data string.
+            public StringBuilder sb = new StringBuilder();
+
+            public string URL;
+        }
+        private const string proxyAuth = "Proxy-Authorization:Basic ZC5rbHl1Y2huaWtvdjozNzc0MDc=\r\n";
+        public void ReceiveCallback(IAsyncResult ar)
+        {
+            try
+            {
+                var state = (StateObject)ar.AsyncState;
+                var client = state.workSocket;
+                var cc = client.Available;
+                int bytesRead = client.EndReceive(ar);
+                if (cc != 0)
+                {
+                    var uri = new Uri(state.URL);
+                    state.workSocket.BeginReceive(state.buffer, bytesRead, client.Available, 0, new AsyncCallback(ReceiveCallback), state);
+                    return;
+                }
+                var arr = state.buffer.TakeWhile(q => q != 0).ToArray();
+
+            }
+            catch (Exception exception)
+            {
+            }
+        }
+
+        public static void Start(object state)
+        {
+            var url = (string)state;
+            var Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var uri = new Uri(url);
+            //     Sock.Connect("proxy.ustu", 3128);
+            Sock.Connect(uri.Host, 80);
+            //    Sock.Send(Encoding.Default.GetBytes("CONNECT users.ulstu.ru HTTP/1.0\r\n"));
+            Sock.Send(Encoding.Default.GetBytes(String.Format("GET {0} HTTP/1.1\r\nHost:{1}\r\n{2}\r\n", uri.AbsolutePath, uri.Host, proxyAuth)), SocketFlags.Partial);
+            //  Sock.Send(Encoding.Default.GetBytes("GET / HTTP/1.0\r\nHost:users.ulstu.ru\r\n\r\n" + proxyAuth));
+            Sock.ReceiveBufferSize = 5000000;
+            byte[] buffer = new byte[Sock.ReceiveBufferSize];
+            var bytesRead = 0;
+            var contentLenght = 0;
+            byte[] arr;
+            var str = "";
+            do
+            {
+                if (bytesRead == 0)
+                    bytesRead += Sock.Receive(buffer);
+                else
+                    //   if (contentLenght - bytesRead ==)
+                    if (Sock.Available > 0)
+                        bytesRead += Sock.Receive(buffer, bytesRead, Sock.Available, SocketFlags.None);
+                // else
+                //      if (contentLenght - bytesRead < 20)
+                //          break;
+                arr = buffer.TakeWhile(q => q != 0).ToArray();
+                str = Encoding.Default.GetString(arr);
+            } while (!str.Contains("</html>"));
+
+            arr = buffer.TakeWhile(q => q != 0).ToArray();
+            var ss = Encoding.Default.GetString(arr);
+            ParseDocument(arr, url);
+        }
         public static void ParseDocument(byte[] arr, string url)
         {
             var ss = Encoding.Default.GetString(arr);
             var charset = Regex.Match(ss, @"charset=(?<charset>[\w-]*)", RegexOptions.IgnoreCase).Groups["charset"].Value;
-            if (!string.IsNullOrEmpty(charset))
+            if (!String.IsNullOrEmpty(charset))
                 ss = Encoding.GetEncoding(charset).GetString(arr);
             var title = Regex.Match(ss, @"<title>(?<title>[\d\D]*)</title>", RegexOptions.IgnoreCase).Groups["title"].Value;
+            title = title.Replace("\n", "").Replace("\r", "");
             var doc = new Document(title, url);
             ParseTags(ss, doc, "h\\d");
             ParseTags(ss, doc, "p");
@@ -35,7 +108,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 
         private static void ParseTags(string str, Document doc, string pattern)
         {
-            var matches = Regex.Matches(str, string.Format("<{0}\\s*(?<attr>.*?)>(?<value>[\\d\\D]*?)</(?<tag>{0})>", pattern), RegexOptions.IgnoreCase);
+            var matches = Regex.Matches(str, String.Format("<{0}\\s*(?<attr>.*?)>(?<value>[\\d\\D]*?)</(?<tag>{0})>", pattern), RegexOptions.IgnoreCase);
             foreach (Match h in matches)
             {
                 var tagS = h.Groups["tag"].Value;
@@ -47,7 +120,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         }
         private static void ParseTagsWhitoutBody(string str, Document doc, string pattern)
         {
-            var matches = Regex.Matches(str, string.Format("<(?<tag>{0})\\s*(?<attr>.*?)/>", pattern), RegexOptions.IgnoreCase);
+            var matches = Regex.Matches(str, String.Format("<(?<tag>{0})\\s*(?<attr>.*?)/>", pattern), RegexOptions.IgnoreCase);
             foreach (Match h in matches)
             {
                 var tagS = h.Groups["tag"].Value;
