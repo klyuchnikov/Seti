@@ -8,7 +8,7 @@
     <ProjectGuid>{7A8C136B-0609-461B-A05D-3100CF13A907}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_2SLab1</RootNamespace>
+    <RootNamespace>Klyuchnikov.Seti.TwoSemestr.Lab1</RootNamespace>
     <AssemblyName>2SLab1</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -84,7 +84,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -117,6 +116,10 @@
     <ProjectReference Include="..\Lab2CheckersServer\Lab2CheckersServer.csproj">
       <Project>{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}</Project>
       <Name>Lab2CheckersServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Seti.2SemestrLabs\CommonLibrary.csproj">
+      <Project>{3397E9FF-7BA4-4EC0-AC89-8CF200EBD7B6}</Project>
+      <Name>CommonLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

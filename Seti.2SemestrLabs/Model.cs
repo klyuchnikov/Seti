@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 
-namespace _2SLab1
+namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 {
     public class Document : INotifyPropertyChanged
     {
