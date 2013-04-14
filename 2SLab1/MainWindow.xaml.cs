@@ -67,7 +67,6 @@ namespace _2SLab1
                 var str = "";
                 do
                 {
-                    // Sock.Poll(1000, SelectMode.SelectRead);
                     if (bytesRead == 0)
                         bytesRead += Sock.Receive(buffer);
                     else
@@ -79,22 +78,15 @@ namespace _2SLab1
                     //          break;
                     arr = buffer.TakeWhile(q => q != 0).ToArray();
                     str = Encoding.Default.GetString(arr);
-                    //   var contentLenghtS =
-                    //       Regex.Match(str, @"Content-Length: (?<Length>\d*)", RegexOptions.IgnoreCase).Groups["Length"]
-                    //           .Value;
-                    //   contentLenght = int.Parse(contentLenghtS) + str.IndexOf("<");
                 } while (!str.Contains("</html>"));
 
                 arr = buffer.TakeWhile(q => q != 0).ToArray();
                 var ss = Encoding.Default.GetString(arr);
-                // Create the state object.
-                // Begin receiving the data from the remote device.
-            //    MessageBox.Show(ss.Length.ToString());
                 Parser(arr, textBox2.Text);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error");
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "Error");
                 Console.WriteLine(e.ToString());
             }
         }
@@ -110,8 +102,6 @@ namespace _2SLab1
                 if (cc != 0)
                 {
                     var uri = new Uri(state.URL);
-                    //    Sock.Send(Encoding.Default.GetBytes(string.Format(
-                    //        "GET {0} HTTP/1.1\r\nHost:{1}\r\n{2}\r\nProxy-Connection:keep-alive\r\n", uri.AbsolutePath, uri.Host, proxyAuth)));
                     Sock.BeginReceive(state.buffer, bytesRead, client.Available, 0, new AsyncCallback(ReceiveCallback), state);
                     return;
                 }
@@ -126,55 +116,64 @@ namespace _2SLab1
         void Parser(byte[] arr, string url)
         {
             var ss = Encoding.Default.GetString(arr);
-            /* if (ss.Contains("HTTP/1.0 200 Connection established"))
-             {
-                 Dispatcher.Invoke(new Action(() =>
-                 {
-                     var uri = new Uri(textBox2.Text);
-                     Sock.Send(Encoding.Default.GetBytes(string.Format(
-                         "GET {0} HTTP/1.1\r\nHost:{1}\r\n{2}\r\nProxy-Connection:keep-alive\r\n", uri.AbsolutePath, uri.Host, proxyAuth)));
-                     Sock.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
-                 }), null);
-                 return;
-             }*/
             var charset = Regex.Match(ss, @"charset=(?<charset>[\w-]*)", RegexOptions.IgnoreCase).Groups["charset"].Value;
             if (!string.IsNullOrEmpty(charset))
                 ss = Encoding.GetEncoding(charset).GetString(arr);
-         //   Dispatcher.Invoke(new Action(() => richTextBox1.Document.Blocks.Add(new Paragraph(new Run(ss)))), null);
-            //Dispatcher.Invoke(new Action(() => richTextBox1.Document.Blocks.Add(new Paragraph(new Run(charset)))), null);
-
             var title = Regex.Match(ss, @"<title>(?<title>[\d\D]*)</title>", RegexOptions.IgnoreCase).Groups["title"].Value;
             var doc = new Document(title, url);
+            ParseTags(ss, doc, "h\\d");
+            ParseTags(ss, doc, "p");
+            ParseKeywords(ss, doc);
+            Model.Current.documents.Add(doc);
+            Model.Current.Documents = null;
+        }
+        private void ParseKeywords(string str, Document doc)
+        {
+            var match = Regex.Match(str, "<meta name=\"keywords\" content=\"(?<content>.*?)\"\\s*?/>", RegexOptions.IgnoreCase);
+            var keywords = match.Groups["content"].Value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var keyword in keywords)
+            {
+                doc.Keywords.Add(keyword.Trim());
+            }
+        }
 
-            Model.Current.Document = doc;
-            var matches = Regex.Matches(ss,
-                "<h\\d\\s*(?<attr>.*?)>(?<value>[\\d\\D]*?)</(?<tag>h\\d)>", RegexOptions.IgnoreCase);
+        private void ParseTags(string str, Document doc, string pattern)
+        {
+            var matches = Regex.Matches(str, string.Format("<{0}\\s*(?<attr>.*?)>(?<value>[\\d\\D]*?)</(?<tag>{0})>", pattern), RegexOptions.IgnoreCase);
             foreach (Match h in matches)
             {
                 var tagS = h.Groups["tag"].Value;
                 var value = h.Groups["value"].Value.Replace("\n", "").Replace("\r", "");
                 var tag = new Tag(doc, tagS, value);
-                var attrsS = h.Groups["attr"].Value.Replace("\n", "").Replace("\r", "");
-                var ms = Regex.Matches(attrsS, "(?<name>.*)=\"(?<value>.*)\"", RegexOptions.IgnoreCase);
-                foreach (Match m in ms)
-                {
-                    var name = m.Groups["name"].Value;
-                    var valueA = m.Groups["value"].Value;
-                    var newatt = new Attribute(tag, name, valueA);
-                    Model.Current.Attributes.Add(newatt);
-                  //  Model.Current.Attributes = null;
-                }
+                ParseAttributes(tag, h.Groups["attr"].Value);
                 Model.Current.Tags.Add(tag);
-              //  Model.Current.Tags = null;
             }
-            Model.Current.documents.Add(doc);
-            Model.Current.Documents = null;
-            Dispatcher.Invoke(new Action(() =>
-            {
-                listBox1.ItemsSource = Model.Current.Documents;
-             //   MessageBox.Show(ss.Length.ToString());
-            }), null);
         }
+        private void ParseTagsWhitoutBody(string str, Document doc, string pattern)
+        {
+            var matches = Regex.Matches(str, string.Format("<(?<tag>{0})\\s*(?<attr>.*?)/>", pattern), RegexOptions.IgnoreCase);
+            foreach (Match h in matches)
+            {
+                var tagS = h.Groups["tag"].Value;
+                var tag = new Tag(doc, tagS, null);
+                ParseAttributes(tag, h.Groups["attr"].Value);
+                Model.Current.Tags.Add(tag);
+            }
+        }
+
+        private void ParseAttributes(Tag tag, string str)
+        {
+            var attrsS = str.Replace("\n", "").Replace("\r", "");
+            var ms = Regex.Matches(attrsS, "\\s*?(?<name>\\S*?)=\"(?<value>.*?)\"", RegexOptions.IgnoreCase);
+            foreach (var newatt in from Match m in ms
+                                   let name = m.Groups["name"].Value
+                                   let valueA = m.Groups["value"].Value
+                                   select new Attribute(tag, name, valueA))
+            {
+                Model.Current.Attributes.Add(newatt);
+            }
+        }
+
         private Socket Sock;
     }
 }

@@ -21,9 +21,8 @@ namespace _2SLab1
                 OnPropertyChanged("Name");
             }
         }
-         public Document()
-         {
-         }
+        private readonly List<string> keywords = new List<string>();
+        public List<string> Keywords { get { return keywords; } }
 
         public Document(string name, string url)
         {
@@ -104,7 +103,7 @@ namespace _2SLab1
         }
     }
 
-   public class Model : INotifyPropertyChanged
+    public class Model : INotifyPropertyChanged
     {
         private Model()
         {
@@ -124,22 +123,10 @@ namespace _2SLab1
                     PropertyChanged(this, new PropertyChangedEventArgs("Documents"));
                 foreach (var document1 in documents)
                 {
-                    document.Update();
+                    document1.Update();
                 }
             }
         }
-        private Document document;
-        public Document Document
-        {
-            get { return document; }
-            set
-            {
-                document = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Document"));
-            }
-        }
-
 
         private readonly List<Tag> tags;
         public List<Tag> Tags

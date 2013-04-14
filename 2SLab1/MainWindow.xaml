@@ -26,6 +26,7 @@
                  Height="23"
                  VerticalAlignment="Top" />
         <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
                       Grid.Row="1">
             <ItemsControl ItemsSource="{Binding Path=Documents}"
                           Name="listBox1"
@@ -43,6 +44,20 @@
                                 <TextBlock Text="title: " />
                                 <TextBlock Text="{Binding Name}" />
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Keywords count: " />
+                                <TextBlock Text="{Binding Path=Keywords.Count}" />
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding Keywords}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="   keyword: " />
+                                            <TextBlock Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <ItemsControl ItemsSource="{Binding Tags}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
