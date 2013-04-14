@@ -48,38 +48,45 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 
         public static void Start(object state)
         {
-            var url = (string)state;
-            var Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var uri = new Uri(url);
-            //     Sock.Connect("proxy.ustu", 3128);
-            Sock.Connect(uri.Host, 80);
-            //    Sock.Send(Encoding.Default.GetBytes("CONNECT users.ulstu.ru HTTP/1.0\r\n"));
-            Sock.Send(Encoding.Default.GetBytes(String.Format("GET {0} HTTP/1.1\r\nHost:{1}\r\n{2}\r\n", uri.AbsolutePath, uri.Host, proxyAuth)), SocketFlags.Partial);
-            //  Sock.Send(Encoding.Default.GetBytes("GET / HTTP/1.0\r\nHost:users.ulstu.ru\r\n\r\n" + proxyAuth));
-            Sock.ReceiveBufferSize = 5000000;
-            byte[] buffer = new byte[Sock.ReceiveBufferSize];
-            var bytesRead = 0;
-            var contentLenght = 0;
-            byte[] arr;
-            var str = "";
-            do
+            try
             {
-                if (bytesRead == 0)
-                    bytesRead += Sock.Receive(buffer);
-                else
-                    //   if (contentLenght - bytesRead ==)
-                    if (Sock.Available > 0)
-                        bytesRead += Sock.Receive(buffer, bytesRead, Sock.Available, SocketFlags.None);
-                // else
-                //      if (contentLenght - bytesRead < 20)
-                //          break;
-                arr = buffer.TakeWhile(q => q != 0).ToArray();
-                str = Encoding.Default.GetString(arr);
-            } while (!str.Contains("</html>"));
+                var url = (string)state;
+                var Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                var uri = new Uri(url);
+                //     Sock.Connect("proxy.ustu", 3128);
+                Sock.Connect(uri.Host, 80);
+                //    Sock.Send(Encoding.Default.GetBytes("CONNECT users.ulstu.ru HTTP/1.0\r\n"));
+                Sock.Send(Encoding.Default.GetBytes(String.Format("GET {0} HTTP/1.1\r\nHost:{1}\r\n{2}\r\n", uri.AbsolutePath, uri.Host, proxyAuth)), SocketFlags.Partial);
+                //  Sock.Send(Encoding.Default.GetBytes("GET / HTTP/1.0\r\nHost:users.ulstu.ru\r\n\r\n" + proxyAuth));
+                Sock.ReceiveBufferSize = 5000000;
+                byte[] buffer = new byte[Sock.ReceiveBufferSize];
+                var bytesRead = 0;
+                var contentLenght = 0;
+                byte[] arr;
+                var str = "";
+                do
+                {
+                    if (bytesRead == 0)
+                        bytesRead += Sock.Receive(buffer);
+                    else
+                        //   if (contentLenght - bytesRead ==)
+                        if (Sock.Available > 0)
+                            bytesRead += Sock.Receive(buffer, bytesRead, Sock.Available, SocketFlags.None);
+                    // else
+                    //      if (contentLenght - bytesRead < 20)
+                    //          break;
+                    arr = buffer.TakeWhile(q => q != 0).ToArray();
+                    str = Encoding.Default.GetString(arr);
+                } while (!str.Contains("</html>"));
 
-            arr = buffer.TakeWhile(q => q != 0).ToArray();
-            var ss = Encoding.Default.GetString(arr);
-            ParseDocument(arr, url);
+                arr = buffer.TakeWhile(q => q != 0).ToArray();
+                var ss = Encoding.Default.GetString(arr);
+                ParseDocument(arr, url);
+            }
+            catch (Exception exception)
+            {
+
+            }
         }
         public static void ParseDocument(byte[] arr, string url)
         {
