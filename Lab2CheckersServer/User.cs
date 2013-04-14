@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab2CheckersServer
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer
 {
     [Serializable]
     public class User : INotifyPropertyChanged

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web.Script.Serialization;
 
-namespace Lab2CheckersServer
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer
 {
     internal class ClientConnection : INotifyPropertyChanged
     {

@@ -1,21 +1,53 @@
-﻿<Window x:Class="Lab2CheckersServer.MainWindow"
+﻿<Window x:Class="Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:local="clr-namespace:Lab2CheckersServer"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid  DataContext="{Binding Source={x:Static local:Server.Current}}">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Lab2CheckersServer="clr-namespace:Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer"
+        Title="MainWindow"
+        Height="350"
+        Width="525">
+    <Grid  DataContext="{Binding Source={x:Static Lab2CheckersServer:Server.Current}}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="270*"/>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="270*" />
         </Grid.RowDefinitions>
-        <Button Content="Старт" Name="StartB" HorizontalAlignment="Left" Margin="257,6,0,0" VerticalAlignment="Top" Width="75" Click="StartB_Click"/>
-        <Button Content="Стоп" Name="StopB" HorizontalAlignment="Left" Margin="337,6,0,0" VerticalAlignment="Top" Width="75" Click="StopB_Click"/>
-        <Label Content="Состояние:" HorizontalAlignment="Left" VerticalAlignment="Top" />
-        <Label Content="Работает" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="76,0,0,0" />
-        <Label Content="Порт:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,0,0,0" />
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="195,3,0,0" TextWrapping="Wrap" Text="4510" VerticalAlignment="Top" Width="46" Name="portTB"/>
-        <ListBox Name="ListUsers" Grid.Row="2" ItemsSource="{Binding ListUsersArray}" />
-        <Label Content="Пользователи на сервере" Grid.Row="1" />
+        <Button Content="Старт"
+                Name="StartB"
+                HorizontalAlignment="Left"
+                Margin="257,6,0,0"
+                VerticalAlignment="Top"
+                Width="75"
+                Click="StartB_Click" />
+        <Button Content="Стоп"
+                Name="StopB"
+                HorizontalAlignment="Left"
+                Margin="337,6,0,0"
+                VerticalAlignment="Top"
+                Width="75"
+                Click="StopB_Click" />
+        <Label Content="Состояние:"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top" />
+        <Label Content="Работает"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+               Margin="76,0,0,0" />
+        <Label Content="Порт:"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+               Margin="150,0,0,0" />
+        <TextBox HorizontalAlignment="Left"
+                 Height="23"
+                 Margin="195,3,0,0"
+                 TextWrapping="Wrap"
+                 Text="4510"
+                 VerticalAlignment="Top"
+                 Width="46"
+                 Name="portTB" />
+        <ListBox Name="ListUsers"
+                 Grid.Row="2"
+                 ItemsSource="{Binding ListUsersArray}" />
+        <Label Content="Пользователи на сервере"
+               Grid.Row="1" />
     </Grid>
 </Window>

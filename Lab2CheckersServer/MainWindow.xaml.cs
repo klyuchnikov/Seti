@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Lab2CheckersServer
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml

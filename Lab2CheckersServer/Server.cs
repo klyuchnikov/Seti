@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Lab2CheckersServer
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer
 {
     internal class Server : INotifyPropertyChanged
     {

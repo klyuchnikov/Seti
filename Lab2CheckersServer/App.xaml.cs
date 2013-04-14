@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Lab2CheckersServer
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml
