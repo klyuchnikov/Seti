@@ -23,7 +23,8 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab2
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return ((ThreadState)value).HasFlag(ThreadState.Suspended) ? "Возобновить" : "Остановить";
+            var st = (ThreadState) value;
+            return st.HasFlag(ThreadState.Suspended) || st.HasFlag(ThreadState.SuspendRequested) ? "Возобновить" : "Остановить";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
