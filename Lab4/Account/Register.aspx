@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Регистрация" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="Register.aspx.cs" Inherits="Lab4.Account.Register" %>
+    CodeBehind="Register.aspx.cs" Inherits="Klyuchnikov.Seti.OneSemestr.Lab4.Account.Register" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>

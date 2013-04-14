@@ -1,4 +1,4 @@
-﻿<%@ Page CodeBehind="Error.aspx.cs" Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" Inherits="Lab4.Error" %>
+﻿<%@ Page CodeBehind="Error.aspx.cs" Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" Inherits="Klyuchnikov.Seti.OneSemestr.Lab4.Error" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>

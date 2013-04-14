@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Lab4.Account
+namespace Klyuchnikov.Seti.OneSemestr.Lab4.Account
 {
     public partial class ChangePasswordSuccess : System.Web.UI.Page
     {

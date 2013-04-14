@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Выполнить вход" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="Login.aspx.cs" Inherits="Lab4.Account.Login" %>
+    CodeBehind="Login.aspx.cs" Inherits="Klyuchnikov.Seti.OneSemestr.Lab4.Account.Login" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>

@@ -26,21 +26,21 @@
         <elementListCompartment Id="7e4e05ec-accd-4643-b976-33e00085653a" absoluteBounds="0.765, 6.96, 1.9700000000000002, 1.3578898111979165" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(2.75 : 1.79807657877604); (3.5 : 1.79807657877604)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 1.79807657877604); (3.5 : 1.79807657877604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DCDataContext/Position/Position_EmployeeProject" />
       <nodes>
         <classShapeMoniker Id="2fe05140-1af1-4575-a3b0-26bc7df2e7bd" />
         <classShapeMoniker Id="2e7e3021-ae2c-4fb2-be37-7458926a25fc" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 4.91959757486979); (3.88541416666667 : 4.91959757486979 : JumpStart); (4.05208083333333 : 4.91959757486979 : JumpEnd); (4.5 : 4.91959757486979); (4.5 : 2.62854248046875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 4.91959757486979); (4.5 : 4.91959757486979); (4.5 : 2.62854248046875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DCDataContext/Project/Project_EmployeeProject" />
       <nodes>
         <classShapeMoniker Id="7ee595d8-7109-43f2-8cf8-2a553f92881f" />
         <classShapeMoniker Id="2e7e3021-ae2c-4fb2-be37-7458926a25fc" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 7.45894490559896); (3.9687475 : 7.45894490559896); (3.9687475 : 2.62854248046875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 7.45894490559896); (3.9687475 : 7.45894490559896); (3.9687475 : 2.62854248046875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DCDataContext/Employee/Employee_EmployeeProject" />
       <nodes>
         <classShapeMoniker Id="2a98135c-6ec8-4736-9720-6ece06a58aaf" />

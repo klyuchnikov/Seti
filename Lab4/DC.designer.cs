@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Lab4
+namespace Klyuchnikov.Seti.OneSemestr.Lab4
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;

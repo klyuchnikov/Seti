@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Lab4
+namespace Klyuchnikov.Seti.OneSemestr.Lab4
 {
     public partial class LoadAvatar : System.Web.UI.Page
     {

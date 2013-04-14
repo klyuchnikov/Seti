@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Смена пароля" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
-    CodeBehind="ChangePasswordSuccess.aspx.cs" Inherits="Lab4.Account.ChangePasswordSuccess" %>
+    CodeBehind="ChangePasswordSuccess.aspx.cs" Inherits="Klyuchnikov.Seti.OneSemestr.Lab4.Account.ChangePasswordSuccess" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>

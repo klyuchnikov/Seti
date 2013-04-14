@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 
-namespace Lab4
+namespace Klyuchnikov.Seti.OneSemestr.Lab4
 {
     public class Global : System.Web.HttpApplication
     {
