@@ -10,7 +10,7 @@ using System.Net;
 using System.Timers;
 using System.Web.Script.Serialization;
 
-namespace Lab2CheckersClient
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient
 {
     public class Client : INotifyPropertyChanged
     {

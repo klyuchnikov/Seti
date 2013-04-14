@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Lab2CheckersClient
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient
 {
     /// <summary>
     /// Логика взаимодействия для ConnectForm.xaml

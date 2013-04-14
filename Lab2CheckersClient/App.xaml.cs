@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace Lab2CheckersClient
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

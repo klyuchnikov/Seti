@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace Lab2CheckersClient
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient
 {
     public class Checker
     {

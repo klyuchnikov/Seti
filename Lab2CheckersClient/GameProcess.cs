@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-namespace Lab2CheckersClient
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient
 {
     public sealed class GameProcess : INotifyPropertyChanged
     {
@@ -419,13 +419,13 @@ namespace Lab2CheckersClient
             string pngSelf, pngOpponent;
             if (IsOwner)
             {
-                pngSelf = "pack://application:,,,/Lab2CheckersClient;component/Resources/userWhite.png";
-                pngOpponent = "pack://application:,,,/Lab2CheckersClient;component/Resources/userBlack.png";
+                pngSelf = "pack://application:,,,/Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient;component/Resources/userWhite.png";
+                pngOpponent = "pack://application:,,,/Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient;component/Resources/userBlack.png";
             }
             else
             {
-                pngSelf = "pack://application:,,,/Lab2CheckersClient;component/Resources/userBlack.png";
-                pngOpponent = "pack://application:,,,/Lab2CheckersClient;component/Resources/userWhite.png";
+                pngSelf = "pack://application:,,,/Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient;component/Resources/userBlack.png";
+                pngOpponent = "pack://application:,,,/Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient;component/Resources/userWhite.png";
             }
             checkersSelf = new List<Checker>();
             checkersOpponent = new List<Checker>();
@@ -434,7 +434,7 @@ namespace Lab2CheckersClient
             CanvasGame.Children.Add(
                 new Image()
                 {
-                    Source = new BitmapImage(new Uri("pack://application:,,,/Lab2CheckersClient;component/Resources/polotno.jpg")),
+                    Source = new BitmapImage(new Uri("pack://application:,,,/Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient;component/Resources/polotno.jpg")),
                     Height = 422,
                     Width = 422
                 });

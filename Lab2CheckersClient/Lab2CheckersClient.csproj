@@ -8,8 +8,8 @@
     <ProjectGuid>{260B535B-AD4F-457C-898C-40297DC6D564}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lab2CheckersClient</RootNamespace>
-    <AssemblyName>Lab2CheckersClient</AssemblyName>
+    <RootNamespace>Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient</RootNamespace>
+    <AssemblyName>Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

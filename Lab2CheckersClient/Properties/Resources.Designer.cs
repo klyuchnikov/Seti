@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Lab2CheckersClient.Properties {
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Lab2CheckersClient.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Lab2CheckersClient.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

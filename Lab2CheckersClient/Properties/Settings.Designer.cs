@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Lab2CheckersClient.Properties {
+namespace Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
