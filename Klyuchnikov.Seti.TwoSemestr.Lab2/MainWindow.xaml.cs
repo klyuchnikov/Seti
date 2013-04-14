@@ -15,19 +15,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Timers;
 using Klyuchnikov.Seti.TwoSemestr.CommonLibrary;
 
 namespace Klyuchnikov.Seti.TwoSemestr.Lab2
 {
-
-
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        static ManualResetEvent starter = new ManualResetEvent(false);
-        private RegisteredWaitHandle registeredWaitHandle;
         public MainWindow()
         {
             InitializeComponent();
@@ -36,33 +33,23 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab2
             ThreadPool.SetMinThreads(10, 10);
             ThreadPool.SetMaxThreads(10, 10);
             label2.Content = 0;
-        }
-
-
-        private static Thread Th;
-        /*    public static void Go(object data, bool timedOut)
+            Model2.Current.OnPropertyChanged("Tasks");
+            var timer = new System.Timers.Timer(100);
+            timer.Elapsed += delegate
             {
-                Th = Thread.CurrentThread;
-                int i = 0;
-                while (true)
+                foreach (var task in Model2.Current.Tasks)
                 {
-                    Console.WriteLine(i++.ToString());
+                    task.OnPropertyChanged("ThisThreadState");
+                    task.OnPropertyChanged("ThreadIsAlive");
+                    Model2.Current.OnPropertyChanged("Tasks");
                 }
-                // Выполнение задачи...
-            }*/
+            };
+            timer.Start();
+        }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            label2.DataContext = Th;
-            //   registeredWaitHandle = ThreadPool.RegisterWaitForSingleObject(starter, Go, "привет", -1, true);
-            //ThreadPool.
-            //  for (int i = 0; i < 15; i++)
-            //       ThreadPool.QueueUserWorkItem(JobForAThread, i);
-            //   Thread.Sleep(3000);
-            //  Console.ReadLine();
-            //  starter.Set();
             var arr = textBox1.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
             var count = (int)label2.Content;
             count += arr.Length;
             label2.Content = count;
@@ -72,20 +59,20 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab2
                 return;
             }
             foreach (var s in arr)
-            {
-                ThreadPool.QueueUserWorkItem(Task.Delegate, s);
-            }
+                ThreadPool.QueueUserWorkItem(Model2.Current.Delegate, s);
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             foreach (Task task in Model2.Current.Tasks)
-                task.ThisThread.Resume();
+                if (task.ThisThread.ThreadState.HasFlag(ThreadState.Suspended))
+                { task.ThisThread.Resume(); task.OnPropertyChanged("ThisThreadState"); }
         }
         private void button4_Click(object sender, RoutedEventArgs e)
         {
             foreach (Task task in Model2.Current.Tasks)
-                task.ThisThread.Suspend();
+                if (!task.ThisThread.ThreadState.HasFlag(ThreadState.Stopped))
+                { task.ThisThread.Suspend(); task.OnPropertyChanged("ThisThreadState"); }
         }
 
         private void button3_Click(object sender, RoutedEventArgs e)
@@ -102,6 +89,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab2
                 task.ThisThread.Resume();
             else
                 task.ThisThread.Suspend();
+            task.OnPropertyChanged("ThisThreadState");
         }
 
     }

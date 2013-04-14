@@ -20,7 +20,6 @@
                  AcceptsReturn="True"
                  AcceptsTab="True"
                  Text="http://msdn.microsoft.com/ru-ru/library/tttdef8x(v=vs.100).aspx" />
-
         <ListBox Name="listBox1"
                  ItemsSource="{Binding Source={x:Static CommonLibrary:Model2.Current},Path=Tasks}"
                  Grid.Row="2">
@@ -31,8 +30,6 @@
                                 Click="Button_Click"
                                 Width="100" />
                         <TextBlock Text="{Binding Path=ThisThread.ManagedThreadId}" />
-                        <TextBlock Text=" IsAlive: " />
-                        <TextBlock Text="{Binding Path=ThreadIsAlive}" />
                         <TextBlock Text="  : " />
                         <TextBlock Text="{Binding Path=ThisThreadState, Converter={StaticResource ThreadStateConverter1}}" />
                         <TextBlock Text="   Last URL: " />
