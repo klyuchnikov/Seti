@@ -4,68 +4,93 @@
         xmlns:_2SLab1="clr-namespace:_2SLab1"
         Title="MainWindow"
         Height="445.89"
-        Width="855.822">
-    <Grid DataContext="{Binding Source={x:Static _2SLab1:Model.Current}}">
-        <Button Content="Button"
-                Height="23"
-                HorizontalAlignment="Left"
-                Margin="404,13,0,0"
+        Width="515">
+    <Grid DataContext="{Binding Source={x:Static _2SLab1:Model.Current}}"
+          Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+        <Button Content="Добавить адрес"
+                HorizontalAlignment="Right"
+                Margin="0,-1,12,0"
                 Name="button1"
-                VerticalAlignment="Top"
-                Width="75"
-                Click="button1_Click" />
-        <RichTextBox
-                     Margin="232,42,10,10"
-                     Name="richTextBox1"
-                     VerticalScrollBarVisibility="Auto" />
-        <TextBox Height="23"
-                 HorizontalAlignment="Left"
-                 Margin="12,13,0,0"
+                Width="100"
+                Click="button1_Click"
+                Height="23"
+                VerticalAlignment="Top" />
+        <TextBox Margin="50,0,131,0"
                  Name="textBox2"
-                 VerticalAlignment="Top"
-                 Width="387"
-                 Text="http://msdn.microsoft.com/ru-ru/library/hs600312.aspx" />
-        <ListBox Height="229"
-                 ItemsSource="{Binding Path=Documents}"
-                 HorizontalAlignment="Left"
-                 Margin="12,42,0,0"
-                 Name="listBox1"
-                 VerticalAlignment="Top"
-                 Width="215">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Name}" />
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="   "/>
+                 Text="http://msdn.microsoft.com/ru-ru/library/hs600312.aspx"
+                 Height="23"
+                 VerticalAlignment="Top" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Path=Documents}"
+                          Name="listBox1"
+                          BorderThickness="1"
+                          BorderBrush="Black"
+                          Padding="5">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="url: " />
+                                <TextBlock Text="{Binding URL}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="title: " />
+                                <TextBlock Text="{Binding Name}" />
+                            </StackPanel>
                             <ItemsControl ItemsSource="{Binding Tags}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Name}" />
-                                            <TextBlock Text=": " />
-                                            <TextBlock Text="{Binding Value}" />
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="   " />
+                                                <TextBlock Text="{Binding Name}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Value}" />
+                                            </StackPanel>
+                                            <ItemsControl ItemsSource="{Binding Attributes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="      " />
+                                                            <TextBlock Text="{Binding Name}" />
+                                                            <TextBlock Text=": " />
+                                                            <TextBlock Text="{Binding Value}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
-
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
         <Label Content="Итого: "
                Height="28"
                HorizontalAlignment="Left"
-               Margin="12,271,0,0"
                Name="label1"
-               VerticalAlignment="Top" />
+               VerticalAlignment="Top"
+               Grid.Row="2" />
         <Label Content="{Binding Documents.Count}"
                Height="28"
                HorizontalAlignment="Left"
-               Margin="55,271,0,0"
+               Margin="43,0,0,0"
                Name="label2"
+               VerticalAlignment="Top"
+               Grid.Row="2" />
+        <Label Content="Адрес:"
+               Height="28"
+               HorizontalAlignment="Left"
+               Name="label3"
                VerticalAlignment="Top" />
     </Grid>
 </Window>
