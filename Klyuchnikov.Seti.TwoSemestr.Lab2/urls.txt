@@ -1,6 +1,5 @@
 ﻿http://msdn.microsoft.com/ru-ru/library/tttdef8x(v=vs.100).aspx
 http://www.sql.ru/forum/actualthread.aspx?tid=698278
-http://answerstop.org/question/17693/when-to-use-thread-pool-in-c
 http://msdn.microsoft.com/ru-ru/library/vstudio/3dasc8as(v=vs.100).aspx
 http://msdn.microsoft.com/ru-ru/magazine/gg232758.aspx
 http://wm-help.net/books-online/book/59464/59464-4.html
@@ -11,6 +10,7 @@ http://msdn.microsoft.com/ru-ru/library/system.threading.thread.sleep.aspx
 http://msdn.microsoft.com/ru-ru/library/tttdef8x(v=vs.100).aspx
 http://www.cyberforum.ru/csharp-net/thread570052.html
 http://www.sql.ru/forum/actualthread.aspx?tid=698278
-http://answerstop.org/question/17693/when-to-use-thread-pool-in-c
 http://www.osp.ru/pcworld/2008/11/5685083/
 http://status.domru.ru/
+http://ibank.svyaznoybank.ru/lite/app/pub/Login
+http://rutracker.org/forum/index.php
