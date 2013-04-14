@@ -110,7 +110,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Seti.2SemestrLabs\CommonLibrary.csproj">
+    <ProjectReference Include="..\Klyuchnikov.Seti.TwoSemestr.CommonLibrary\CommonLibrary.csproj">
       <Project>{3397E9FF-7BA4-4EC0-AC89-8CF200EBD7B6}</Project>
       <Name>CommonLibrary</Name>
     </ProjectReference>
