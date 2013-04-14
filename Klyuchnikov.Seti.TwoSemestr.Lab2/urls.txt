@@ -1,0 +1,16 @@
+﻿http://msdn.microsoft.com/ru-ru/library/tttdef8x(v=vs.100).aspx
+http://www.sql.ru/forum/actualthread.aspx?tid=698278
+http://answerstop.org/question/17693/when-to-use-thread-pool-in-c
+http://msdn.microsoft.com/ru-ru/library/vstudio/3dasc8as(v=vs.100).aspx
+http://msdn.microsoft.com/ru-ru/magazine/gg232758.aspx
+http://wm-help.net/books-online/book/59464/59464-4.html
+http://ru.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5_%D0%B2%D1%8B%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F
+http://msdn.microsoft.com/ru-ru/library/system.threading.thread.abort.aspx
+http://msdn.microsoft.com/ru-ru/library/system.threading.timeout.infinite(v=vs.100).aspx
+http://msdn.microsoft.com/ru-ru/library/system.threading.thread.sleep.aspx
+http://msdn.microsoft.com/ru-ru/library/tttdef8x(v=vs.100).aspx
+http://www.cyberforum.ru/csharp-net/thread570052.html
+http://www.sql.ru/forum/actualthread.aspx?tid=698278
+http://answerstop.org/question/17693/when-to-use-thread-pool-in-c
+http://www.osp.ru/pcworld/2008/11/5685083/
+http://status.domru.ru/
