@@ -6,70 +6,31 @@
         Height="373"
         Width="629">
     <Grid DataContext="{Binding Source={x:Static CommonLibrary:Model.Current}}">
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto"
-                      Name="scrollViewer1">
-            <ItemsControl ItemsSource="{Binding Path=Documents}"
-                          Name="listBox2"
-                          BorderThickness="1"
-                          BorderBrush="Black"
-                          Padding="5">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="url: "
-                                           Foreground="Blue" />
-                                <TextBlock Text="{Binding URL}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="title: " />
-                                <TextBlock Text="{Binding Name}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Keywords count: " />
-                                <TextBlock Text="{Binding Path=Keywords.Count}" />
-                            </StackPanel>
-                            <ItemsControl ItemsSource="{Binding Keywords}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="   keyword: " />
-                                            <TextBlock Text="{Binding}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding Tags}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="   " />
-                                                <TextBlock Text="{Binding Name}" />
-                                                <TextBlock Text=": " />
-                                                <TextBlock Text="{Binding Value}" />
-                                            </StackPanel>
-                                            <ItemsControl ItemsSource="{Binding Attributes}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="      " />
-                                                            <TextBlock Text="{Binding Name}" />
-                                                            <TextBlock Text=": " />
-                                                            <TextBlock Text="{Binding Value}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+        <ListBox ItemsSource="{Binding Path=Documents}"
+                 Name="listBox2"
+                 BorderThickness="1"
+                 BorderBrush="Black"
+                 Padding="5"
+                 MouseDoubleClick="listBox2_MouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="url: "
+                                       Foreground="Blue" />
+                            <TextBlock Text="{Binding URL}" />
                         </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="title: " />
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Keywords count: " />
+                            <TextBlock Text="{Binding Path=Keywords.Count}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

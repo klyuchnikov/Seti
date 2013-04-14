@@ -1,0 +1,64 @@
+﻿<Window x:Class="Klyuchnikov.Seti.TwoSemestr.Lab2.ViewResultTask"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ViewResultTask"
+        Height="303"
+        Width="519">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="5"
+                      HorizontalScrollBarVisibility="Auto"
+                      Name="scrollViewer1">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="url: "
+                               Foreground="Blue" />
+                    <TextBlock Text="{Binding URL}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="title: " />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Keywords count: " />
+                    <TextBlock Text="{Binding Path=Keywords.Count}" />
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding Keywords}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="   keyword: " />
+                                <TextBlock Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding Tags}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="   " />
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text=": " />
+                                    <TextBlock Text="{Binding Value}" />
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding Attributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="      " />
+                                                <TextBlock Text="{Binding Name}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Value}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

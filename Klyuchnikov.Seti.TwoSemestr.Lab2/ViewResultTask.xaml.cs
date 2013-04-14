@@ -15,19 +15,14 @@ using Klyuchnikov.Seti.TwoSemestr.CommonLibrary;
 namespace Klyuchnikov.Seti.TwoSemestr.Lab2
 {
     /// <summary>
-    /// Логика взаимодействия для ViewResual.xaml
+    /// Логика взаимодействия для ViewResultTask.xaml
     /// </summary>
-    public partial class ViewResual : Window
+    public partial class ViewResultTask : Window
     {
-        public ViewResual()
+        public ViewResultTask(Document document)
         {
             InitializeComponent();
-        }
-
-        private void listBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var form = new ViewResultTask(listBox2.SelectedItem as Document);
-            form.ShowDialog();
+            DataContext = document;
         }
     }
 }
