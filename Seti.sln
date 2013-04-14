@@ -5,15 +5,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2Semestr", "2Semestr", "{6B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1Semestr", "1Semestr", "{C3913949-6FFA-4E62-8E4E-AAF36D14B36E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersClient", "Lab2CheckersClient\Lab2CheckersClient.csproj", "{260B535B-AD4F-457C-898C-40297DC6D564}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersClient", "Klyuchnikov.Seti.OneSemestr.Lab2CheckersClient\Lab2CheckersClient.csproj", "{260B535B-AD4F-457C-898C-40297DC6D564}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersServer", "Lab2CheckersServer\Lab2CheckersServer.csproj", "{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2CheckersServer", "Klyuchnikov.Seti.OneSemestr.Lab2CheckersServer\Lab2CheckersServer.csproj", "{BEE30552-85EA-46DA-A8B6-09B6DF20BAB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab4", "Lab4\Lab4.csproj", "{56150685-6E80-496F-B68A-69CC2E777ED4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab4", "Klyuchnikov.Seti.OneSemestr.Lab4\Lab4.csproj", "{56150685-6E80-496F-B68A-69CC2E777ED4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2SLab1", "2SLab1\2SLab1.csproj", "{7A8C136B-0609-461B-A05D-3100CF13A907}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2SLab1", "Klyuchnikov.Seti.TwoSemestr.Lab1\2SLab1.csproj", "{7A8C136B-0609-461B-A05D-3100CF13A907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "Seti.2SemestrLabs\CommonLibrary.csproj", "{3397E9FF-7BA4-4EC0-AC89-8CF200EBD7B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "Klyuchnikov.Seti.TwoSemestr.CommonLibrary\CommonLibrary.csproj", "{3397E9FF-7BA4-4EC0-AC89-8CF200EBD7B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2SLab2", "Klyuchnikov.Seti.TwoSemestr.Lab2\2SLab2.csproj", "{BA536607-FB55-42FD-BE30-5BC5DFE52E07}"
 EndProject
