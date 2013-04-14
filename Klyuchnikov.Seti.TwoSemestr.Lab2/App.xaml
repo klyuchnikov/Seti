@@ -1,8 +1,9 @@
 ﻿<Application x:Class="Klyuchnikov.Seti.TwoSemestr.Lab2.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml" xmlns:my="clr-namespace:Klyuchnikov.Seti.TwoSemestr.Lab2">
     <Application.Resources>
-         
-    </Application.Resources>
+    <my:ThreadStateConverter x:Key="ThreadStateConverter1" />
+    <my:ThreadStateButtonConverter x:Key="ThreadStateButtonConverter1" />
+  </Application.Resources>
 </Application>
