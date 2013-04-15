@@ -94,7 +94,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
             var charset = Regex.Match(ss, @"charset=(?<charset>[\w-]*)", RegexOptions.IgnoreCase).Groups["charset"].Value;
             if (!String.IsNullOrEmpty(charset))
                 ss = Encoding.GetEncoding(charset).GetString(arr);
-            var title = Regex.Match(ss, @"<title>(?<title>[\d\D]*)</title>", RegexOptions.IgnoreCase).Groups["title"].Value;
+            var title = Regex.Match(ss, @"<title>(?<title>[\d\D]*?)</title>", RegexOptions.IgnoreCase).Groups["title"].Value;
             title = title.Replace("\n", "").Replace("\r", "");
             var doc = new Document(title, url);
             ParseTags(ss, doc, "h\\d");
