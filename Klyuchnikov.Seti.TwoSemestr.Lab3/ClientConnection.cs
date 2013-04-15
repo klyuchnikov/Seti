@@ -145,20 +145,14 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                 ConsoleOutput.Enqueue("Sites Processed Count: " + Model.Current.Documents.Length + "\r\n");
                                 foreach (var document in Model.Current.Documents)
                                 {
+                                    ConsoleOutput.Enqueue("Index database: " + document.ID + "\r\n");
                                     ConsoleOutput.Enqueue("url: " + document.URL + "\r\n");
                                     ConsoleOutput.Enqueue("title: " + document.Name + "\r\n");
                                     ConsoleOutput.Enqueue("Keywords count: " + document.Keywords.Count + "\r\n");
-                                    foreach (var keyword in document.Keywords)
-                                        ConsoleOutput.Enqueue("   keyword: " + keyword + "\r\n");
                                     ConsoleOutput.Enqueue("Tags count: " + document.Tags.Length + "\r\n");
-                                    foreach (var tag in document.Tags)
-                                    {
-                                        ConsoleOutput.Enqueue("   " + tag.Name + ": " + tag.Value + "\r\n");
-                                        foreach (var att in tag.Attributes)
-                                            ConsoleOutput.Enqueue("     " + att.Name + ": " + att.Value + "\r\n");
-                                    }
                                 }
-                                for (int i = 0; i < (ConsoleOutput.Count > 23 ? 23 : ConsoleOutput.Count); i++)
+                                var countConsoleOutput = ConsoleOutput.Count;
+                                for (int i = 0; i < (countConsoleOutput > 23 ? 23 : countConsoleOutput); i++)
                                     SendBytes(Encoding.Default.GetBytes(ConsoleOutput.Dequeue()));
                                 if (ConsoleOutput.Count > 0)
                                 {
@@ -166,10 +160,49 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     lastCommand = Operation.WaitOfContinued;
                                 }
                                 else
+                                {
+                                    SendBytes(Encoding.Default.GetBytes("\r\n" + login + ">"));
                                     lastCommand = Operation.WaitOperation;
+                                }
                             }
                             else if (arr[0] == "ris" || arr[0] == "RequestInfoSite")
                             {
+                                if (arr.Length < 2)
+                                { SendBytes(Encoding.Default.GetBytes("LaunchInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                Document document = null;
+                                try
+                                {
+                                    var ind = int.Parse(arr[1]);
+                                    document = Model.Current.Documents.Single(q => q.ID == ind);
+                                }
+                                catch (Exception)
+                                { SendBytes(Encoding.Default.GetBytes("LaunchInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                ConsoleOutput.Enqueue("Index database: " + document.ID + "\r\n");
+                                ConsoleOutput.Enqueue("url: " + document.URL + "\r\n");
+                                ConsoleOutput.Enqueue("title: " + document.Name + "\r\n");
+                                ConsoleOutput.Enqueue("Keywords count: " + document.Keywords.Count + "\r\n");
+                                foreach (var keyword in document.Keywords)
+                                    ConsoleOutput.Enqueue("   keyword: " + keyword + "\r\n");
+                                ConsoleOutput.Enqueue("Tags count: " + document.Tags.Length + "\r\n");
+                                foreach (var tag in document.Tags)
+                                {
+                                    ConsoleOutput.Enqueue("   " + tag.Name + ": " + tag.Value + "\r\n");
+                                    foreach (var att in tag.Attributes)
+                                        ConsoleOutput.Enqueue("     " + att.Name + ": " + att.Value + "\r\n");
+                                }
+                                var countConsoleOutput = ConsoleOutput.Count;
+                                for (int i = 0; i < (countConsoleOutput > 23 ? 23 : countConsoleOutput); i++)
+                                    SendBytes(Encoding.Default.GetBytes(ConsoleOutput.Dequeue()));
+                                if (ConsoleOutput.Count > 0)
+                                {
+                                    SendBytes(Encoding.Default.GetBytes("Press enter any key to continue output..."));
+                                    lastCommand = Operation.WaitOfContinued;
+                                }
+                                else
+                                {
+                                    SendBytes(Encoding.Default.GetBytes("\r\n" + login + ">"));
+                                    lastCommand = Operation.WaitOperation;
+                                }
 
                             }
                             else if (arr[0] == "dit" || arr[0] == "DeleteInfoSite")
@@ -185,7 +218,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                 else
                                 {
                                     ThreadPool.QueueUserWorkItem(Model2.Current.Delegate, arr[1].Trim());
-                                    SendBytes(Encoding.Default.GetBytes("Launch site analysis " + arr[1] + "...\r\n"));
+                                    SendBytes(Encoding.Default.GetBytes("Launch site analysis " + arr[1] + "...\r\n" + login + ">"));
                                 }
                             }
                             else if (arr[0] == "sit" || arr[0] == "StopInfoSite")
@@ -201,7 +234,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                         }
                         break;
                     case Operation.WaitOfContinued:
-                        for (int i = 0; i < (ConsoleOutput.Count > 23 ? 23 : ConsoleOutput.Count); i++)
+                        SendBytes(new byte[] { 13, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 13 });
+                        var count = ConsoleOutput.Count;
+                        for (int i = 0; i < (count > 23 ? 23 : count); i++)
                             SendBytes(Encoding.Default.GetBytes(ConsoleOutput.Dequeue()));
                         if (ConsoleOutput.Count == 0)
                         { lastCommand = Operation.WaitOperation; SendBytes(Encoding.Default.GetBytes(login + ">")); }
