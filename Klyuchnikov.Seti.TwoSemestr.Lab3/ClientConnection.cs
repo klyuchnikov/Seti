@@ -176,7 +176,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     document = Model.Current.Documents.Single(q => q.ID == ind);
                                 }
                                 catch (Exception)
-                                { SendBytes(Encoding.Default.GetBytes("LaunchInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                { SendBytes(Encoding.Default.GetBytes("RequestInfoSite: argument invalid!\r\n" + login + ">")); break; }
                                 ConsoleOutput.Enqueue("Index database: " + document.ID + "\r\n");
                                 ConsoleOutput.Enqueue("url: " + document.URL + "\r\n");
                                 ConsoleOutput.Enqueue("title: " + document.Name + "\r\n");
@@ -207,7 +207,22 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                             }
                             else if (arr[0] == "d" || arr[0] == "DeleteInfoSite")
                             {
-
+                                if (arr.Length < 2)
+                                { SendBytes(Encoding.Default.GetBytes("RequestInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                try
+                                {
+                                    var ind = int.Parse(arr[1]);
+                                    var doc = Model.Current.Documents.SingleOrDefault(q => q.ID == ind);
+                                    if (doc != null)
+                                    {
+                                        Model.Current.Documents.Remove(doc);
+                                        SendBytes(Encoding.Default.GetBytes("Delete info site " + arr[1] + ".\r\n" + login + ">"));
+                                    }
+                                    else
+                                        SendBytes(Encoding.Default.GetBytes("Not found info site " + arr[1] + ".\r\n" + login + ">"));
+                                }
+                                catch (Exception)
+                                { SendBytes(Encoding.Default.GetBytes("RequestInfoSite: argument invalid!\r\n" + login + ">")); break; }
                             }
                             else if (arr[0] == "l" || arr[0] == "LaunchInfoSite")
                             {
@@ -223,7 +238,19 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                             }
                             else if (arr[0] == "s" || arr[0] == "StopInfoSite")
                             {
+                                if (arr.Length < 2)
+                                { SendBytes(Encoding.Default.GetBytes("StopInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                if (!arr[1].Contains("http://") && !arr[1].Contains("https://"))
+                                { SendBytes(Encoding.Default.GetBytes("StopInfoSite: no prefix http or https !\r\n" + login + ">")); break; }
+                                else
+                                {
+                                    var task = Model2.Current.Tasks.SingleOrDefault(q => q.URL == arr[1].Trim());
+                                    if (task != null)
+                                        SendBytes(Encoding.Default.GetBytes("Stop site analysis " + arr[1] + ".\r\n" + login + ">"));
+                                    else
+                                        SendBytes(Encoding.Default.GetBytes("Not found task site " + arr[1] + ".\r\n" + login + ">"));
 
+                                }
                             }
                             else
                             {
