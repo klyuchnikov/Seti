@@ -50,12 +50,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
             timer.Start();
 
         }
-
-        private void AbortOpponentConnection()
-        {
-            SendBytes(new byte[] { 6 });
-        }
-
         ~ClientConnection()
         {
             timer.Stop();
@@ -100,6 +94,22 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         private Queue<string> ConsoleOutput = new Queue<string>();
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
+            try
+            {
+                if (e.BytesTransferred == 0)
+                    if (!Sock.Connected)
+                    {
+                        Server.Current.ConsoleOut.Add(string.Format("{0,2}: Disconnect", this.ID));
+                        Server.Current.ConsoleOutArray = null;
+                        Sock.Close();
+                        Server.Current.ListConnection.Remove(this);
+                        return;
+                    }
+            }
+            catch (Exception exception)
+            {
+
+            }
             if (e.BytesTransferred == 2 && e.Buffer[0] == 13 && e.Buffer[1] == 10)
             {
                 Server.Current.ConsoleOut.Add(string.Format("{0,2}:<{1}", this.ID, lastString));

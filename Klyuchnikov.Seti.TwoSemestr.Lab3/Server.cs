@@ -55,12 +55,12 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                 {
                     Client = new ClientConnection(e.AcceptSocket);
                     consoleOut.Add(string.Format("Connected ID:{1,2}, IP:{0}", e.AcceptSocket.AddressFamily, Client.ID.ToString()));
+                    Server.Current.ConsoleOutArray = null;
                     ListConnection.Add(Client);
                     SendPropertiesChanged();
                 }
                 e.AcceptSocket = null;
                 AcceptAsync(AcceptAsyncArgs);
-                Server.Current.ConsoleOutArray = null;
             }
         }
 
