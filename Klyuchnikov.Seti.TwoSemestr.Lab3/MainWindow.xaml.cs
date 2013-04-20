@@ -22,7 +22,27 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         public MainWindow()
         {
             InitializeComponent();
-            Server.Current.Start(3000);
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            int port;
+            if (int.TryParse(portTB.Text, out port))
+            {
+                MessageBox.Show("Порт введен некорректно:");
+                return;
+            }
+            if (!Server.Current.IsOpen)
+            {
+                Server.Current.Start(port);
+                button1.Content = "Стоп";
+            }
+            else
+            {
+                Server.Current.Stop();
+                button1.Content = "Старт";
+            }
+
         }
     }
 }
