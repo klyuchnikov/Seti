@@ -20,10 +20,11 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         private SocketAsyncEventArgs SockAsyncEventArgs;
         private byte[] buff;
         private Timer timer;
+        public int ID { get; set; }
 
         public ClientConnection(Socket AcceptedSocket)
         {
-            ClientNumber++;
+            this.ID = ClientNumber++;
             buff = new byte[1024];
             Sock = AcceptedSocket;
             SockAsyncEventArgs = new SocketAsyncEventArgs();
@@ -101,6 +102,8 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         {
             if (e.BytesTransferred == 2 && e.Buffer[0] == 13 && e.Buffer[1] == 10)
             {
+                Server.Current.ConsoleOut.Add(string.Format("{0,2}:<{1}", this.ID, lastString));
+                Server.Current.ConsoleOutArray = null;
                 switch (lastCommand)
                 {
                     case Operation.Login:
@@ -119,12 +122,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                         if (lastString == "admin" && login == "admin")
                         {
                             SendBytes(Encoding.Default.GetBytes("Authentication is successful!\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("Available commands:\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("dp  DislayProcessed     Request a list of the analyzed site pages.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("r RequestInfoSite     Request for information about the text to the address.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("d DeleteInfoSite      Deleting information on the address page.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("l LaunchInfoSite      Launch site analysis at the specified address.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("s StopInfoSite        Stopping the analysis of the site at the address.\r\n"));
+                            OutCommants();
                             SendBytes(Encoding.Default.GetBytes(login + ">"));
                             lastCommand = Operation.WaitOperation;
                         }
@@ -142,7 +140,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                             var arr = lastString.Split(' ');
                             if (arr[0] == "dp" || arr[0] == "DislayProcessed")
                             {
-                                ConsoleOutput.Enqueue("Sites Processed Count: " + Model.Current.Documents.Length + "\r\n");
+                                ConsoleOutput.Enqueue("Sites Processed Count: " + Model.Current.Documents.Count + "\r\n");
                                 foreach (var document in Model.Current.Documents)
                                 {
                                     ConsoleOutput.Enqueue("Index database: " + document.ID + "\r\n");
@@ -164,6 +162,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     SendBytes(Encoding.Default.GetBytes("\r\n" + login + ">"));
                                     lastCommand = Operation.WaitOperation;
                                 }
+                            }
+                            else if (arr[0] == "c" || arr[0] == "Commands")
+                            {
+                                OutCommants();
                             }
                             else if (arr[0] == "r" || arr[0] == "RequestInfoSite")
                             {
@@ -203,7 +205,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     SendBytes(Encoding.Default.GetBytes("\r\n" + login + ">"));
                                     lastCommand = Operation.WaitOperation;
                                 }
-
                             }
                             else if (arr[0] == "d" || arr[0] == "DeleteInfoSite")
                             {
@@ -249,7 +250,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                         SendBytes(Encoding.Default.GetBytes("Stop site analysis " + arr[1] + ".\r\n" + login + ">"));
                                     else
                                         SendBytes(Encoding.Default.GetBytes("Not found task site " + arr[1] + ".\r\n" + login + ">"));
-
                                 }
                             }
                             else
@@ -257,7 +257,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                 SendBytes(Encoding.Default.GetBytes("Operation invalid!\r\n"));
                                 SendBytes(Encoding.Default.GetBytes(login + ">"));
                             }
-                            // SendBytes(Encoding.Default.GetBytes(login + ">"));
                         }
                         break;
                     case Operation.WaitOfContinued:
@@ -287,9 +286,27 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
 
         }
 
+        private void OutCommants()
+        {
+            SendBytes(Encoding.Default.GetBytes("Available commands:\r\n"));
+            SendBytes(Encoding.Default.GetBytes("c  Commands            Displays a list of commands the server accepts\r\n"));
+            SendBytes(Encoding.Default.GetBytes("dp DislayProcessed     Request a list of the analyzed site pages.\r\n"));
+            SendBytes(
+                      Encoding.Default.GetBytes("r  RequestInfoSite     Request for information about the text to the address.\r\n"));
+            SendBytes(Encoding.Default.GetBytes("d  DeleteInfoSite      Deleting information on the address page.\r\n"));
+            SendBytes(Encoding.Default.GetBytes("l  LaunchInfoSite      Launch site analysis at the specified address.\r\n"));
+            SendBytes(Encoding.Default.GetBytes("s  StopInfoSite        Stopping the analysis of the site at the address.\r\n"));
+        }
 
         private void SendBytes(byte[] data)
         {
+            var arr = data.TakeWhile(a => a != 0).ToArray();
+            var str = Encoding.Default.GetString(arr);
+            if (str != "")
+            {
+                Server.Current.ConsoleOut.Add(string.Format("{0,2}:>{1}", this.ID, str.Replace("\r", "").Replace("\n", "")));
+                Server.Current.ConsoleOutArray = null;
+            }
             SocketAsyncEventArgs enew = new SocketAsyncEventArgs();
             enew.Completed += SockAsyncEventArgs_Completed;
             enew.SetBuffer(data, 0, data.Length);

@@ -26,13 +26,17 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         public List<ClientConnection> ListConnection { get; set; }
 
         private readonly List<string> consoleOut;
-        public string[] ConsoleOut
+        public List<string> ConsoleOut
+        {
+            get { return consoleOut; }
+        }
+        public string[] ConsoleOutArray
         {
             get { return consoleOut.ToArray(); }
             set
             {
                 if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("ConsoleOut"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("ConsoleOutArray"));
             }
         }
 
@@ -46,15 +50,17 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         {
             if (IsOpen)
             {
+                ClientConnection Client = null;
                 if (e.SocketError == SocketError.Success)
                 {
-                    ClientConnection Client = new ClientConnection(e.AcceptSocket);
+                    Client = new ClientConnection(e.AcceptSocket);
+                    consoleOut.Add(string.Format("Connected ID:{1,2}, IP:{0}", e.AcceptSocket.AddressFamily, Client.ID.ToString()));
                     ListConnection.Add(Client);
                     SendPropertiesChanged();
                 }
                 e.AcceptSocket = null;
                 AcceptAsync(AcceptAsyncArgs);
-                Console.WriteLine("Connected:{0}", e.AcceptSocket.RemoteEndPoint);
+                Server.Current.ConsoleOutArray = null;
             }
         }
 
