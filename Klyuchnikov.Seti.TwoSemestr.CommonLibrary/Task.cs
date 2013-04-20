@@ -89,6 +89,13 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
             this.thisthread = thread;
         }
 
+        public bool Stop()
+        {
+            var res = this.ThisThread.IsAlive;
+            this.ThisThread.Abort();
+            return res;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public virtual void OnPropertyChanged(string propertyName)
         {
