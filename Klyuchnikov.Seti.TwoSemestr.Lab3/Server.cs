@@ -13,18 +13,28 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
     {
         private Socket Sock;
         private SocketAsyncEventArgs AcceptAsyncArgs;
-        private bool IsOpen { get; set; }
+        public bool IsOpen { get; set; }
 
         private Server()
         {
             ListConnection = new List<ClientConnection>();
+            consoleOut = new List<string>();
         }
 
         public static Server Current = new Server();
 
-
         public List<ClientConnection> ListConnection { get; set; }
 
+        private readonly List<string> consoleOut;
+        public string[] ConsoleOut
+        {
+            get { return consoleOut.ToArray(); }
+            set
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("ConsoleOut"));
+            }
+        }
 
         public void SendPropertiesChanged()
         {
@@ -74,7 +84,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
 
         public void Stop()
         {
-            //    Sock.Shutdown(SocketShutdown.Both);
             Sock.Close();
             IsOpen = false;
             ListConnection = new List<ClientConnection>();
