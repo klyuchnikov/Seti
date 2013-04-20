@@ -124,9 +124,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         public static Model Current = new Model();
 
         public readonly List<Document> documents;
-        public Document[] Documents
+        public List<Document> Documents
         {
-            get { return documents.ToArray(); }
+            get { return documents; }
             set
             {
                 if (PropertyChanged != null)
