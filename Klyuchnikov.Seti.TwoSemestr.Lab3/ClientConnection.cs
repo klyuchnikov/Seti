@@ -121,10 +121,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                             SendBytes(Encoding.Default.GetBytes("Authentication is successful!\r\n"));
                             SendBytes(Encoding.Default.GetBytes("Available commands:\r\n"));
                             SendBytes(Encoding.Default.GetBytes("dp  DislayProcessed     Request a list of the analyzed site pages.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("ris RequestInfoSite     Request for information about the text to the address.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("dit DeleteInfoSite      Deleting information on the address page.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("lit LaunchInfoSite      Launch site analysis at the specified address.\r\n"));
-                            SendBytes(Encoding.Default.GetBytes("sit StopInfoSite        Stopping the analysis of the site at the address.\r\n"));
+                            SendBytes(Encoding.Default.GetBytes("r RequestInfoSite     Request for information about the text to the address.\r\n"));
+                            SendBytes(Encoding.Default.GetBytes("d DeleteInfoSite      Deleting information on the address page.\r\n"));
+                            SendBytes(Encoding.Default.GetBytes("l LaunchInfoSite      Launch site analysis at the specified address.\r\n"));
+                            SendBytes(Encoding.Default.GetBytes("s StopInfoSite        Stopping the analysis of the site at the address.\r\n"));
                             SendBytes(Encoding.Default.GetBytes(login + ">"));
                             lastCommand = Operation.WaitOperation;
                         }
@@ -165,10 +165,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     lastCommand = Operation.WaitOperation;
                                 }
                             }
-                            else if (arr[0] == "ris" || arr[0] == "RequestInfoSite")
+                            else if (arr[0] == "r" || arr[0] == "RequestInfoSite")
                             {
                                 if (arr.Length < 2)
-                                { SendBytes(Encoding.Default.GetBytes("LaunchInfoSite: argument invalid!\r\n" + login + ">")); break; }
+                                { SendBytes(Encoding.Default.GetBytes("RequestInfoSite: argument invalid!\r\n" + login + ">")); break; }
                                 Document document = null;
                                 try
                                 {
@@ -205,11 +205,11 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                 }
 
                             }
-                            else if (arr[0] == "dit" || arr[0] == "DeleteInfoSite")
+                            else if (arr[0] == "d" || arr[0] == "DeleteInfoSite")
                             {
 
                             }
-                            else if (arr[0] == "lit" || arr[0] == "LaunchInfoSite")
+                            else if (arr[0] == "l" || arr[0] == "LaunchInfoSite")
                             {
                                 if (arr.Length < 2)
                                 { SendBytes(Encoding.Default.GetBytes("LaunchInfoSite: argument invalid!\r\n" + login + ">")); break; }
@@ -221,7 +221,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                                     SendBytes(Encoding.Default.GetBytes("Launch site analysis " + arr[1] + "...\r\n" + login + ">"));
                                 }
                             }
-                            else if (arr[0] == "sit" || arr[0] == "StopInfoSite")
+                            else if (arr[0] == "s" || arr[0] == "StopInfoSite")
                             {
 
                             }
@@ -258,10 +258,6 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                 Console.WriteLine(str); SendBytes(new byte[] { 0x00 });
             }
 
-            // SendBytes(Encoding.Default.GetBytes(str + " new string"));
-
-            // if (e.SocketError != SocketError.Success || e.Buffer.Length <= 0) return;
-            //    e.SetBuffer(new byte[e.Buffer.Length], 0, e.Buffer.Length);
         }
 
 
