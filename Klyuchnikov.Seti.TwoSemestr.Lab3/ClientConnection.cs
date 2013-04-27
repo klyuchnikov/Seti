@@ -30,25 +30,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
             SockAsyncEventArgs = new SocketAsyncEventArgs();
             SockAsyncEventArgs.Completed += SockAsyncEventArgs_Completed;
             SockAsyncEventArgs.SetBuffer(buff, 0, buff.Length);
-            //  SendBytes(new byte[] { 244 });
             SendBytes(Encoding.Default.GetBytes("Enter login: "));
             lastCommand = Operation.Login;
             ReceiveAsync(SockAsyncEventArgs);
-            timer = new Timer(100);
-            timer.Elapsed += delegate
-            {
-                try
-                {
-                    if (Sock.Connected)
-                        Sock.Send(new byte[] { 0 });
-                }
-                catch (Exception e)
-                {
-
-                }
-            };
-            timer.Start();
-
         }
         ~ClientConnection()
         {
@@ -176,6 +160,7 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                             else if (arr[0] == "c" || arr[0] == "Commands")
                             {
                                 OutCommants();
+                                SendBytes(Encoding.Default.GetBytes(login + ">"));
                             }
                             else if (arr[0] == "r" || arr[0] == "RequestInfoSite")
                             {
