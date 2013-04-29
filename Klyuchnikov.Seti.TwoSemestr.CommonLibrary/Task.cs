@@ -7,6 +7,9 @@ using System.Windows.Threading;
 
 namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 {
+    /// <summary>
+    /// Класс, представляющий модель пула заданий
+    /// </summary>
     public class Model2 : INotifyPropertyChanged
     {
         private Model2()
@@ -47,8 +50,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         }
     }
 
-
-
+    /// <summary>
+    /// Класс, представляющий задание для пула потоков заданий
+    /// </summary>
     public class Task : INotifyPropertyChanged
     {
         public Thread thisthread;

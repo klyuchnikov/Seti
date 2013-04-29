@@ -8,6 +8,9 @@ using Attribute = System.Attribute;
 
 namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 {
+    /// <summary>
+    /// Класс, производящий анализ сайтов
+    /// </summary>
     public class Parser
     {
         public class StateObject
@@ -24,6 +27,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
             public string URL;
         }
         private const string proxyAuth = "Proxy-Authorization:Basic ZC5rbHl1Y2huaWtvdjozNzc0MDc=\r\n";
+        /// <summary>
+        /// Метод обратного вызова, приемник ответов сервера
+        /// </summary>
+        /// <param name="ar"></param>
         public void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -46,6 +53,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
             }
         }
 
+        /// <summary>
+        /// Старт анализа сайта
+        /// </summary>
+        /// <param name="state">url сайта</param>
         public static void Start(object state)
         {
             try
@@ -88,7 +99,12 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 
             }
         }
-        public static void ParseDocument(byte[] arr, string url)
+        /// <summary>
+        /// Разбор документа
+        /// </summary>
+        /// <param name="arr">массив байт документа</param>
+        /// <param name="url">url документа</param>
+        private static void ParseDocument(byte[] arr, string url)
         {
             var ss = Encoding.Default.GetString(arr);
             var charset = Regex.Match(ss, @"charset=(?<charset>[\w-]*)", RegexOptions.IgnoreCase).Groups["charset"].Value;
@@ -103,6 +119,12 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
             Model.Current.documents.Add(doc);
             Model.Current.Documents = null;
         }
+
+        /// <summary>
+        /// Разбор клучевых слов в документе
+        /// </summary>
+        /// <param name="str">документ</param>
+        /// <param name="doc">объектная модель докумнета</param>
         private static void ParseKeywords(string str, Document doc)
         {
             var match = Regex.Match(str, "<meta name=\"keywords\" content=\"(?<content>.*?)\"\\s*?/>", RegexOptions.IgnoreCase);
@@ -112,7 +134,12 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
                 doc.Keywords.Add(keyword.Trim());
             }
         }
-
+        /// <summary>
+        /// Разбор тегов
+        /// </summary>
+        /// <param name="str">документ</param>
+        /// <param name="doc">объектная модель докумнета</param>
+        /// <param name="pattern">шаблон разбора</param>
         private static void ParseTags(string str, Document doc, string pattern)
         {
             var matches = Regex.Matches(str, String.Format("<{0}\\s*(?<attr>.*?)>(?<value>[\\d\\D]*?)</(?<tag>{0})>", pattern), RegexOptions.IgnoreCase);
@@ -125,6 +152,12 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
                 Model.Current.Tags.Add(tag);
             }
         }
+        /// <summary>
+        /// Разбор тегов
+        /// </summary>
+        /// <param name="str">документ</param>
+        /// <param name="doc">объектная модель докумнета</param>
+        /// <param name="pattern">шаблон разбора</param>
         private static void ParseTagsWhitoutBody(string str, Document doc, string pattern)
         {
             var matches = Regex.Matches(str, String.Format("<(?<tag>{0})\\s*(?<attr>.*?)/>", pattern), RegexOptions.IgnoreCase);
@@ -136,7 +169,11 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
                 Model.Current.Tags.Add(tag);
             }
         }
-
+        /// <summary>
+        /// Разбор аттрибутов
+        /// </summary>
+        /// <param name="tag">объектная модель тега</param>
+        /// <param name="str">документ</param>
         private static void ParseAttributes(Tag tag, string str)
         {
             var attrsS = str.Replace("\n", "").Replace("\r", "");

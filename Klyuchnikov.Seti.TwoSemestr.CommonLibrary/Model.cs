@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
 {
+    /// <summary>
+    /// Класс, представляющий документ
+    /// </summary>
     public class Document : INotifyPropertyChanged
     {
         private static int Count;
@@ -60,6 +63,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         }
     }
 
+    /// <summary>
+    /// Класс, представляющий тег
+    /// </summary>
     public class Tag : INotifyPropertyChanged
     {
         private static int Count;
@@ -88,6 +94,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         }
     }
 
+    /// <summary>
+    /// Класс, представляющий аттрибут
+    /// </summary>
     public class Attribute : INotifyPropertyChanged
     {
 
@@ -113,6 +122,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.CommonLibrary
         }
     }
 
+    /// <summary>
+    /// Класс, по паттерну Singleton, представляющий модель данных
+    /// </summary>
     public class Model : INotifyPropertyChanged
     {
         private Model()
