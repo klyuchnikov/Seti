@@ -12,6 +12,9 @@ using Timer = System.Timers.Timer;
 
 namespace Klyuchnikov.Seti.TwoSemestr.Lab3
 {
+    /// <summary>
+    /// Класс, представляющий подключение клиента
+    /// </summary>
     internal class ClientConnection : INotifyPropertyChanged
     {
         private static int ClientNumber = 0;
@@ -76,6 +79,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         private Operation lastCommand;
         private string login = "";
         private Queue<string> ConsoleOutput = new Queue<string>();
+        /// <summary>
+        /// Метод обратного вызова, приемник ответа клиента
+        /// </summary>
+        /// <param name="e"></param>
         private void ProcessReceive(SocketAsyncEventArgs e)
         {
             try
@@ -280,7 +287,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
             }
 
         }
-
+        /// <summary>
+        /// Вывод списка доступных команд
+        /// </summary>
         private void OutCommants()
         {
             SendBytes(Encoding.Default.GetBytes("Available commands:\r\n"));
@@ -293,6 +302,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
             SendBytes(Encoding.Default.GetBytes("s  StopInfoSite        Stopping the analysis of the site at the address.\r\n"));
         }
 
+        /// <summary>
+        /// Отсыл данных(байт) клиенту
+        /// </summary>
+        /// <param name="data"></param>
         private void SendBytes(byte[] data)
         {
             var arr = data.TakeWhile(a => a != 0).ToArray();
