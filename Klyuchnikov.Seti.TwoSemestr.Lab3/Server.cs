@@ -9,6 +9,9 @@ using System.Timers;
 
 namespace Klyuchnikov.Seti.TwoSemestr.Lab3
 {
+    /// <summary>
+    /// Класс, представляющий сервер
+    /// </summary>
     internal class Server : INotifyPropertyChanged
     {
         private Socket Sock;
@@ -30,6 +33,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
         {
             get { return consoleOut; }
         }
+        /// <summary>
+        /// Массив строк вывода командноц строки 
+        /// </summary>
         public string[] ConsoleOutArray
         {
             get { return consoleOut.ToArray(); }
@@ -71,6 +77,10 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
                 AcceptCompleted(Sock, e);
         }
 
+        /// <summary>
+        /// Старт сервера
+        /// </summary>
+        /// <param name="Port">порт</param>
         public void Start(int Port)
         {
             Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -88,6 +98,9 @@ namespace Klyuchnikov.Seti.TwoSemestr.Lab3
             //timer.Start();
         }
 
+        /// <summary>
+        /// Стоп сервера
+        /// </summary>
         public void Stop()
         {
             Sock.Close();
